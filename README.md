@@ -1,4 +1,5 @@
 # LLM-World
 * Generative AI
-  * Fine-Tuning
+ * Generate Chat
+ * Fine-Tuning
 * One-Shot AI Agent
