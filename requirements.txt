@@ -1,4 +1,17 @@
+# GenAI
 python-dotenv
 requests
 streamlit
 openai
+# AI Agent
+langgraph
+langchain-openai
+langchain
+langchain-aws
+langchain-community
+boto3
+scikit-learn
+pandas
+numpy
+scipy
+matplotlib
