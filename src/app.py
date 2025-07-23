@@ -40,7 +40,7 @@ def chat_gpt_41(ask_a_question):
 
 if __name__=='__main__':
 
-    user_input = st.text_input("Submit a question or comment!")
+    user_input = st.text_input("Submit a question or comment!!")
 
     st.title(chat_gpt_41(user_input))
 
