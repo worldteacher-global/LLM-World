@@ -5,13 +5,15 @@ streamlit
 openai
 # AI Agent
 langgraph
-langchain-openai
 langchain
 langchain-aws
-langchain-community
+langchain-core
+langchain-tavily
 boto3
 scikit-learn
 pandas
 numpy
 scipy
 matplotlib
+linkup-sdk
+langchain-mcp-adapters
