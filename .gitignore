@@ -2,3 +2,4 @@ myenv/
 .env
 *.env
 Multi-Agent copy.ipynb
+src/__pycache__/
