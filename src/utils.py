@@ -48,13 +48,13 @@ class Utils:
 
 
     @staticmethod
-    def llm(modelid: str):  
+    def aws_llm(modelid: str):  
         '''Create LangChain Object for AWS Bedrock llm'''     
 
         return ChatBedrockConverse(model_id=modelid, region_name='us-east-1')
 
     @staticmethod
-    def genai_llm(modle_id: str):
+    def openai_llm(modle_id: str):
         '''Create LangChain LLM object for Azure OpenAI llm'''
         api_response = requests.get(os.getenv('AZURE_OPENAI_BASEURL'))
         payload = api_response.json()
@@ -68,7 +68,7 @@ class Utils:
         return gllm
 
     @staticmethod
-    def get_genai_llms():
+    def get_openai_llms():
         '''get a list of llms available in Azure OpenAI'''
         response = requests.get(os.getenv('AZURE_OPENAI_BASEURL'))
         returned_payload = response.json()
@@ -76,7 +76,7 @@ class Utils:
         return [models for models in returned_payload['nonprod'].keys()]
 
     @staticmethod
-    def get_bedrock_llms():
+    def get_aws_llms():
         '''get a list of llms available in AWS Bedrock'''
         bedrock_client = boto3.client('bedrock', region_name='us-east-1')
 
