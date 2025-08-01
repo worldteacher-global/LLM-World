@@ -90,26 +90,87 @@ class MyTools:
                 return f'Column {col} is not normally distributed, and not recommended to include in ANOVA analysis'
         return 'Data is normal'
 
+    # @tool
+    # @staticmethod
+    # def gen_plot(plot_type: str = "line", title: str = "Plot", x: list = [1, 2, 3], y: list = [1, 4, 9], label: list = [1, 2, 3], path: str | None=None) -> str:
+    #     """Generate a plot using Matplotlib. Returns base64-encoded PNG string.
+        
+    #     Args:
+    #         plot_type: 'line', 'bar', or 'scatter'
+    #         title: title of the plot
+    #         x: list of x values
+    #         y: list of y values
+    #     """
+    #     label = [1, 2, 3] or pd.read_csv(path)
+    #     plt.figure()
+    #     if plot_type == "line":
+    #         plt.plot(x, y)
+    #     elif plot_type == "bar":
+    #         plt.bar(x, y)
+    #     elif plot_type == "scatter":
+    #         plt.scatter(x, y, c=label)
+    #     else:
+    #         return f"Unsupported plot_type: {plot_type}"
+
+    #     plt.title(title)
+    #     plt.xlabel("X")
+    #     plt.ylabel("Y")
+
+    #     buf = io.BytesIO()
+    #     # plt.savefig(buf, format='png')
+    #     # plt.close()
+    #     buf.seek(0)
+    #     # print('image has been created')
+    #     img_bytes = buf.read()
+    #     img_base64 = base64.b64encode(img_bytes).decode('utf-8')
+    #     return 'image created'
     @tool
     @staticmethod
-    def gen_plot(plot_type: str = "line", title: str = "Plot", x: list = [1, 2, 3], y: list = [1, 4, 9]) -> str:
-        """Generate a plot using Matplotlib. Returns base64-encoded PNG string.
+    def gen_plot(plot_type: str = "line", title: str = "Plot", x: list | None = None, y: list | None = None, label: list | None = None,path: str | None = None) -> str:
+        """
+        Generate a plot using Matplotlib. Returns base64-encoded PNG string.
         
         Args:
             plot_type: 'line', 'bar', or 'scatter'
             title: title of the plot
             x: list of x values
             y: list of y values
+            label: list of labels (only used for scatter)
+            path: optional path to CSV for labels
         """
+        import matplotlib.pyplot as plt
+        import pandas as pd
+        import io
+        import base64
+
+        # Defaults
+        if x is None:
+            x = [1, 2, 3]
+        if y is None:
+            y = [1, 4, 9]
+
+        # Load labels from CSV if provided
+        if path:
+            try:
+                df = pd.read_csv(path)
+                label = df.iloc[:, 0].tolist()
+            except Exception as e:
+                label = None
+                print(f"Warning: Could not read labels from {path} - {e}")
+
         plt.figure()
+
         if plot_type == "line":
             plt.plot(x, y)
         elif plot_type == "bar":
             plt.bar(x, y)
         elif plot_type == "scatter":
-            plt.scatter(x, y)
+            if label is not None:
+                plt.scatter(x, y, c=label)
+            else:
+                plt.scatter(x, y)
         else:
-            return f"Unsupported plot_type: {plot_type}"
+            raise ValueError(f"Unsupported plot_type: {plot_type}")
 
         plt.title(title)
         plt.xlabel("X")
@@ -119,9 +180,6 @@ class MyTools:
         # plt.savefig(buf, format='png')
         # plt.close()
         buf.seek(0)
-        # print('image has been created')
-        img_bytes = buf.read()
-        img_base64 = base64.b64encode(img_bytes).decode('utf-8')
-        return 'image created'
 
-    
+        img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+        return 'image created'
