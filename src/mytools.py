@@ -119,9 +119,9 @@ class MyTools:
         # plt.savefig(buf, format='png')
         # plt.close()
         buf.seek(0)
-        # return 'image has been saved'
+        # print('image has been created')
         img_bytes = buf.read()
         img_base64 = base64.b64encode(img_bytes).decode('utf-8')
-        return img_base64
+        return 'image created'
 
     
