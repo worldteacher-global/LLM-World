@@ -102,7 +102,7 @@ def multiAgent(user_input: str):
 
     supervisor = (
         StateGraph(MessagesState)
-        .add_node(supervisor_agent)#, destinations=('statistics_agent', 'visualization_agent', END))
+        .add_node(supervisor_agent, destinations=('statistics_agent', 'visualization_agent', END))
         .add_node(statistics_agent)
         .add_node(visualization_agent)
         .add_edge(START, 'supervisor')
