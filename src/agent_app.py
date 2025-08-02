@@ -98,9 +98,7 @@ async def _multiAgent(user_input: str):
     config = {'configurable': {'thread_id': 'test_thread'}}
 
     supervisor_agent = create_react_agent(model=helper.aws_llm('us.'+helper.get_aws_llms()['Claude Sonnet 4']), tools=[assign_to_visualization_agent, assign_to_statistics_agent], prompt=prompt, checkpointer=memory, name='supervisor')
-   # supervisor_agent = create_react_agent(model=helper.openai_llm('gpt-4.1'), tools=[assign_to_visualization_agent, assign_to_statistics_agent], prompt=prompt, checkpointer=memory, name='supervisor')
-
-    from langgraph.graph import END
+  #  supervisor_agent = create_react_agent(model=helper.openai_llm('gpt-4.1'), tools=[assign_to_visualization_agent, assign_to_statistics_agent], prompt=prompt, checkpointer=memory, name='supervisor')
 
     supervisor = (
         StateGraph(MessagesState)
@@ -133,7 +131,7 @@ if __name__=='__main__':
     user_input = st.text_input("Hello! Please submit a question or comment!!")
     if user_input:
         result = multiAgent(user_input)
-        st.title("Agent Response")
+       # st.title("Agent Response")
         st.write(result)
         #st.title(multiAgent(user_input))
 
