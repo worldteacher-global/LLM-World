@@ -8,6 +8,7 @@ langgraph
 langchain
 langchain-aws
 langchain-core
+langchain-openai
 langchain-tavily
 boto3
 scikit-learn

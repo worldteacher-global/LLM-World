@@ -1,7 +1,7 @@
 # Multi-Agent Framework
 import streamlit as st
 from dotenv import load_dotenv
-load_dotenv('/home/sagemaker-user/user-default-efs/CLONED_REPOS/LLM-World/.env')
+load_dotenv('/home/ec2-user/BoW/LLM-World/.env')
 from langchain_core.prompts import ChatPromptTemplate 
 from langchain_core.tools import tool
 from langgraph.prebuilt import create_react_agent
@@ -9,7 +9,7 @@ from langchain_mcp_adapters.client import MultiServerMCPClient
 from langgraph.checkpoint.memory import MemorySaver
 from langchain_aws import ChatBedrockConverse
 import sys
-sys.path.append('/home/sagemaker-user/user-default-efs/CLONED_REPOS/LLM-World/src/')
+sys.path.append('/home/ec2-user/BoW/LLM-World/src/')
 from mytools import MyTools
 from utils import Utils
 import asyncio
@@ -22,7 +22,7 @@ from langgraph.graph import StateGraph, START, MessagesState, END
 from langgraph.types import Command
 ##
 
-def multiAgent(user_input: str):
+async def multiAgent(user_input: str):
 
     ## Statistics Agent
 
@@ -111,8 +111,8 @@ def multiAgent(user_input: str):
         .compile()
     )
 
-    def supervisor_response(user_query):
-        async for chunk in supervisor.astream({'messages':[{'role':'user','content': [{'type': 'text', 'text':query}]}]}):
+    async def supervisor_response(user_query):
+        for chunk in supervisor.astream({'messages':[{'role':'user','content': [{'type': 'text', 'text':query}]}]}):
             helper.clean_print_msgs(chunk, last_message=True)
 
     return supervisor_response()
