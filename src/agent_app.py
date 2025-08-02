@@ -13,6 +13,7 @@ sys.path.append('/home/ec2-user/BoW/LLM-World/src/')
 from mytools import MyTools
 from utils import Utils
 import asyncio
+import os
 
 ## Handoff tool packages
 from typing import Annotated
@@ -22,7 +23,7 @@ from langgraph.graph import StateGraph, START, MessagesState, END
 from langgraph.types import Command
 ##
 
-async def multiAgent(user_input: str):
+async def _multiAgent(user_input: str):
 
     ## Statistics Agent
 
@@ -115,14 +116,21 @@ async def multiAgent(user_input: str):
         for chunk in supervisor.astream({'messages':[{'role':'user','content': [{'type': 'text', 'text':query}]}]}):
             helper.clean_print_msgs(chunk, last_message=True)
 
-    return supervisor_response()
+    return await supervisor_response(user_query)
+    
+def multiAgent(user_query: str):
+    ''' Run logic in a blocking way'''
+    return asyncio.run(_multiAgent(user_query))
 
 
 
 if __name__=='__main__':
 
     user_input = st.text_input("Hello! Please submit a question or comment!!")
-
-    st.title(multiAgent(user_input))
+    if user_input:
+        result = multiAgent(user_input)
+        st.title("Agent Response")
+        st.write(result)
+        #st.title(multiAgent(user_input))
 
     
