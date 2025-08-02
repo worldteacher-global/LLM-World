@@ -97,8 +97,8 @@ async def _multiAgent(user_input: str):
     memory = MemorySaver()
     config = {'configurable': {'thread_id': 'test_thread'}}
 
-   # supervisor_agent = create_react_agent(model=helper.aws_llm('us.'+helper.get_aws_llms()['Claude Sonnet 4']), tools=[assign_to_visualization_agent, assign_to_statistics_agent], prompt=prompt, checkpointer=memory, name='supervisor')
-    supervisor_agent = create_react_agent(model=helper.openai_llm('gpt-4.1'), tools=[assign_to_visualization_agent, assign_to_statistics_agent], prompt=prompt, checkpointer=memory, name='supervisor')
+    supervisor_agent = create_react_agent(model=helper.aws_llm('us.'+helper.get_aws_llms()['Claude Sonnet 4']), tools=[assign_to_visualization_agent, assign_to_statistics_agent], prompt=prompt, checkpointer=memory, name='supervisor')
+   # supervisor_agent = create_react_agent(model=helper.openai_llm('gpt-4.1'), tools=[assign_to_visualization_agent, assign_to_statistics_agent], prompt=prompt, checkpointer=memory, name='supervisor')
 
     from langgraph.graph import END
 
@@ -114,14 +114,17 @@ async def _multiAgent(user_input: str):
     )
 
     async def supervisor_response(user_query: str):
-        for chunk in supervisor.astream({'messages':[{'role':'user','content': [{'type': 'text', 'text':user_query}]}]}):
+        async for chunk in supervisor.astream({'messages':[{'role':'user','content': [{'type': 'text', 'text':user_query}]}]}):
             helper.clean_print_msgs(chunk, last_message=True)
+    
+    return await supervisor_response(user_input)
 
-   
+
+            
     
 def multiAgent(user_query: str):
     ''' Run logic in a blocking way'''
-    return asyncio.run(supervisor_response(user_query))
+    return asyncio.run(_multiAgent(user_query))
 
 
 
