@@ -112,8 +112,12 @@ async def _multiAgent(user_input: str):
     )
 
     async def supervisor_response(user_query: str):
+        response_text = ""
         async for chunk in supervisor.astream({'messages':[{'role':'user','content': [{'type': 'text', 'text':user_query}]}]}):
-            helper.clean_print_msgs(chunk, last_message=True)
+            chunk_text = helper.clean_print_msgs(chunk, last_message=True)
+            if chunk_text:
+                response_text += chunk_text
+        return response_text
     
     return await supervisor_response(user_input)
 
