@@ -89,6 +89,71 @@ class MyTools:
             if pval < 0.05:
                 return f'Column {col} is not normally distributed, and not recommended to include in ANOVA analysis'
         return 'Data is normal'
+    @tool
+    def gen_plot(self, plot_type: str = "line", title: str = "Plot", x: list | None = None, y: list | None = None, label: list | None = None, path: str | None = None) -> str:
+        """
+        Generates a plot using Matplotlib and returns a prefixed base64-encoded PNG string.
+        Args:
+            plot_type: 'line', 'bar', or 'scatter'
+            title: title of the plot
+            x: list of x values
+            y: list of y values
+            label: list of labels (only used for scatter with colors)
+            path: optional path to a CSV file for data
+        """
+        import matplotlib.pyplot as plt
+        import pandas as pd
+        import io
+        import base64
+
+        plt.figure(figsize=(10, 6))
+
+        # If path is provided, try to load data from it
+        if path:
+            try:
+                df = pd.read_csv(path)
+                x = df.iloc[:, 0].tolist()
+                y = df.iloc[:, 1].tolist()
+                if df.shape[1] > 2:
+                    label = df.iloc[:, 2].tolist()
+            except Exception as e:
+                return f"Error: Could not read data from {path} - {e}"
+        
+        # Use default data if none is provided
+        if x is None: x = [1, 2, 3]
+        if y is None: y = [1, 4, 9]
+
+        if plot_type == "line":
+            plt.plot(x, y)
+        elif plot_type == "bar":
+            plt.bar(x, y)
+        elif plot_type == "scatter":
+            # The 'c' argument expects numerical data for coloring, not string labels for annotation
+            # We will ignore string labels for simplicity or you can implement annotation logic
+            try:
+                numeric_label = pd.to_numeric(label, errors='coerce')
+                plt.scatter(x, y, c=numeric_label)
+            except (ValueError, TypeError):
+                 plt.scatter(x, y)
+        else:
+            return f"Error: Unsupported plot_type: {plot_type}"
+
+        plt.title(title)
+        plt.xlabel("X-axis")
+        plt.ylabel("Y-axis")
+        plt.grid(True)
+        
+        # --- FIX: These lines are essential ---
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')
+        plt.close() # Close the plot to free memory
+        # --- END FIX ---
+
+        buf.seek(0)
+        img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+        
+        # --- FIX: Return the base64 string with a prefix for easy parsing ---
+        return f"base64_image:{img_base64}"
 
     # @tool
     # @staticmethod
@@ -124,62 +189,62 @@ class MyTools:
     #     img_bytes = buf.read()
     #     img_base64 = base64.b64encode(img_bytes).decode('utf-8')
     #     return 'image created'
-    @tool
-    @staticmethod
-    def gen_plot(plot_type: str = "line", title: str = "Plot", x: list | None = None, y: list | None = None, label: list | None = None,path: str | None = None) -> str:
-        """
-        Generate a plot using Matplotlib. Returns base64-encoded PNG string.
+    # @tool
+    # @staticmethod
+    # def gen_plot(plot_type: str = "line", title: str = "Plot", x: list | None = None, y: list | None = None, label: list | None = None,path: str | None = None) -> str:
+    #     """
+    #     Generate a plot using Matplotlib. Returns base64-encoded PNG string.
         
-        Args:
-            plot_type: 'line', 'bar', or 'scatter'
-            title: title of the plot
-            x: list of x values
-            y: list of y values
-            label: list of labels (only used for scatter)
-            path: optional path to CSV for labels
-        """
-        import matplotlib.pyplot as plt
-        import pandas as pd
-        import io
-        import base64
+    #     Args:
+    #         plot_type: 'line', 'bar', or 'scatter'
+    #         title: title of the plot
+    #         x: list of x values
+    #         y: list of y values
+    #         label: list of labels (only used for scatter)
+    #         path: optional path to CSV for labels
+    #     """
+    #     import matplotlib.pyplot as plt
+    #     import pandas as pd
+    #     import io
+    #     import base64
 
-        # Defaults
-        if x is None:
-            x = [1, 2, 3]
-        if y is None:
-            y = [1, 4, 9]
+    #     # Defaults
+    #     if x is None:
+    #         x = [1, 2, 3]
+    #     if y is None:
+    #         y = [1, 4, 9]
 
-        # Load labels from CSV if provided
-        if path:
-            try:
-                df = pd.read_csv(path)
-                label = df.iloc[:, 0].tolist()
-            except Exception as e:
-                label = None
-                print(f"Warning: Could not read labels from {path} - {e}")
+    #     # Load labels from CSV if provided
+    #     if path:
+    #         try:
+    #             df = pd.read_csv(path)
+    #             label = df.iloc[:, 0].tolist()
+    #         except Exception as e:
+    #             label = None
+    #             print(f"Warning: Could not read labels from {path} - {e}")
 
-        plt.figure()
+    #     plt.figure()
 
-        if plot_type == "line":
-            plt.plot(x, y)
-        elif plot_type == "bar":
-            plt.bar(x, y)
-        elif plot_type == "scatter":
-            if label is not None:
-                plt.scatter(x, y, c=label)
-            else:
-                plt.scatter(x, y)
-        else:
-            raise ValueError(f"Unsupported plot_type: {plot_type}")
+    #     if plot_type == "line":
+    #         plt.plot(x, y)
+    #     elif plot_type == "bar":
+    #         plt.bar(x, y)
+    #     elif plot_type == "scatter":
+    #         if label is not None:
+    #             plt.scatter(x, y, c=label)
+    #         else:
+    #             plt.scatter(x, y)
+    #     else:
+    #         raise ValueError(f"Unsupported plot_type: {plot_type}")
 
-        plt.title(title)
-        plt.xlabel("X")
-        plt.ylabel("Y")
+    #     plt.title(title)
+    #     plt.xlabel("X")
+    #     plt.ylabel("Y")
 
-        buf = io.BytesIO()
-        # plt.savefig(buf, format='png')
-        # plt.close()
-        buf.seek(0)
+    #     buf = io.BytesIO()
+    #     # plt.savefig(buf, format='png')
+    #     # plt.close()
+    #     buf.seek(0)
 
-        img_base64 = base64.b64encode(buf.read()).decode('utf-8')
-        return 'image created'
+    #     img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+    #     return 'image created'
