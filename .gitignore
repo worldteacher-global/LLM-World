@@ -1,4 +1,4 @@
-myenv/
+llmenv/
 .env
 *.env
 Multi-Agent copy.ipynb
