@@ -1,3 +1,4 @@
+ipykernel
 # GenAI
 python-dotenv
 requests
@@ -18,3 +19,11 @@ scipy
 matplotlib
 linkup-sdk
 langchain-mcp-adapters
+langchain-text-splitters
+langchain-openai
+#----------------------OSS--------------
+transformers
+acceleratec
+triton==3.4 
+kernels
+transformers[serving] # cli serve
