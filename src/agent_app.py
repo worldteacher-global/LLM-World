@@ -117,24 +117,10 @@ async def _multiAgent(user_input: str) -> Tuple[str, str | None]:
 
     return final_text_response, base64_image_data
 
-# def multiAgent(user_query: str) -> Tuple[str, str | None]:
-#     return asyncio.run(_multiAgent(user_input=user_query))
-def multiAgent(user_input, uploaded_file=None):
-    # If a file was uploaded, read its contents
-    if uploaded_file:
-        content = uploaded_file.read()  # returns bytes
-        # For text files, decode to string
-        if uploaded_file.type.startswith("text"):
-            content = content.decode("utf-8")
-        # You can now pass `content` to your agents or process it as needed
-    
-    # Your existing processing logic
-    text_result = "Processed output"
-    image_to_display = None
-    return text_result, image_to_display
+def multiAgent(user_query: str) -> Tuple[str, str | None]:
+    return asyncio.run(_multiAgent(user_input=user_query))
 
-UPLOAD_DIR = "uploaded_files"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+
 
 if __name__=='__main__':
     st.set_page_config(layout="wide")
