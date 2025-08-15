@@ -132,7 +132,7 @@ def multiAgent(user_input, uploaded_file=None):
     text_result = "Processed output"
     image_to_display = None
     return text_result, image_to_display
-s
+
 UPLOAD_DIR = "uploaded_files"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
