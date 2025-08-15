@@ -120,6 +120,8 @@ async def _multiAgent(user_input: str) -> Tuple[str, str | None]:
 def multiAgent(user_query: str) -> Tuple[str, str | None]:
     return asyncio.run(_multiAgent(user_input=user_query))
 
+UPLOAD_DIR = "uploaded_files"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 if __name__=='__main__':
     st.set_page_config(layout="wide")
@@ -144,6 +146,17 @@ if __name__=='__main__':
 
     with col2:
         uploaded_file = st.file_uploader("Upload a file", type=["csv", "txt", "xlsx"], key="file_uploader")
+        if uploaded_file:
+            # Save the file to UPLOAD_DIR
+            uploaded_file_path = os.path.join(UPLOAD_DIR, uploaded_file.name)
+            with open(uploaded_file_path, "wb") as f:
+                f.write(uploaded_file.getbuffer())
+            st.success(f"File '{uploaded_file.name}' uploaded successfully!")
+            # Store a message in the chat
+            st.session_state.messages.append({
+                "role": "user",
+                "content": f"Uploaded file: {uploaded_file.name} (stored at {uploaded_file_path})"
+            })
 
     # Handle chat submission
     if user_input:
