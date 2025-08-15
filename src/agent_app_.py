@@ -117,45 +117,38 @@ async def _multiAgent(user_input: str) -> Tuple[str, str | None]:
 
     return final_text_response, base64_image_data
 
-def multiAgent(user_query: str) -> Tuple[str, str | None]:
-    return asyncio.run(_multiAgent(user_input=user_query))
+# def multiAgent(user_query: str) -> Tuple[str, str | None]:
+#     return asyncio.run(_multiAgent(user_input=user_query))
+def multiAgent(user_input, uploaded_file=None):
+    # If a file was uploaded, read its contents
+    if uploaded_file:
+        content = uploaded_file.read()  # returns bytes
+        # For text files, decode to string
+        if uploaded_file.type.startswith("text"):
+            content = content.decode("utf-8")
+        # You can now pass `content` to your agents or process it as needed
+    
+    # Your existing processing logic
+    text_result = "Processed output"
+    image_to_display = None
+    return text_result, image_to_display
 
+UPLOAD_DIR = "uploaded_files"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 if __name__=='__main__':
     st.set_page_config(layout="wide")
     st.title("Multi-Agent Analysis Framework")
-
-    # Initialize session state
-    if 'messages' not in st.session_state: 
-        st.session_state.messages = []
-
-    # Display chat messages
+    if 'messages' not in st.session_state: st.session_state.messages = []
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
-            if message.get("image"):
-                st.image(message["image"], caption="Generated Visualization")
-
-    # Layout for chat input and file uploader side by side
-    col1, col2 = st.columns([3, 1])  # Adjust width ratio as needed
-
-    with col1:
-        user_input = st.chat_input("Hello! Please submit a question or request:")
-
-    with col2:
-        uploaded_file = st.file_uploader("Upload a file", type=["csv", "txt", "xlsx"], key="file_uploader")
-
-    # Handle chat submission
-    if user_input:
-        # Store user message
+            if message.get("image"): st.image(message["image"], caption="Generated Visualization")
+    if user_input := st.chat_input("Hello! Please submit a question or request:"):
         st.session_state.messages.append({"role": "user", "content": user_input})
-        with st.chat_message("user"): 
-            st.markdown(user_input)
-        
+        with st.chat_message("user"): st.markdown(user_input)
         with st.spinner("Agents are collaborating on your request..."):
-            # Pass uploaded_file if needed
-            text_result, image_to_display = multiAgent(user_input, uploaded_file=uploaded_file)
-
+            text_result, image_to_display = multiAgent(user_input)
         with st.chat_message("assistant"):
             if text_result:
                 st.markdown(text_result)
@@ -163,16 +156,7 @@ if __name__=='__main__':
             else:
                 st.warning("The agent process completed, but no text output was returned.")
                 msg_to_store = {"role": "assistant", "content": "No text output was generated."}
-
             if image_to_display:
                 st.image(image_to_display, caption="Generated Visualization")
                 msg_to_store["image"] = image_to_display
-
             st.session_state.messages.append(msg_to_store)
-
-    # Optional: show a message if a file was uploaded
-    if uploaded_file:
-        st.session_state.messages.append({
-            "role": "user",
-            "content": f"Uploaded file: {uploaded_file.name}"
-        })
