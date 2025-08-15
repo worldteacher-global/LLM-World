@@ -120,8 +120,6 @@ async def _multiAgent(user_input: str) -> Tuple[str, str | None]:
 def multiAgent(user_query: str) -> Tuple[str, str | None]:
     return asyncio.run(_multiAgent(user_input=user_query))
 
-# Streamlit UI (unchanged)
-import streamlit as st
 
 if __name__=='__main__':
     st.set_page_config(layout="wide")
@@ -131,15 +129,6 @@ if __name__=='__main__':
     if 'messages' not in st.session_state: 
         st.session_state.messages = []
 
-    # File uploader
-    uploaded_file = st.file_uploader("Upload a file", type=["csv", "txt", "xlsx"])  # Adjust allowed file types as needed
-    if uploaded_file:
-        st.session_state.messages.append({
-            "role": "user",
-            "content": f"Uploaded file: {uploaded_file.name}"
-        })
-        st.success(f"File '{uploaded_file.name}' uploaded successfully!")
-
     # Display chat messages
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
@@ -147,8 +136,18 @@ if __name__=='__main__':
             if message.get("image"):
                 st.image(message["image"], caption="Generated Visualization")
 
-    # Chat input
-    if user_input := st.chat_input("Hello! Please submit a question or request:"):
+    # Layout for chat input and file uploader side by side
+    col1, col2 = st.columns([3, 1])  # Adjust width ratio as needed
+
+    with col1:
+        user_input = st.chat_input("Hello! Please submit a question or request:")
+
+    with col2:
+        uploaded_file = st.file_uploader("Upload a file", type=["csv", "txt", "xlsx"], key="file_uploader")
+
+    # Handle chat submission
+    if user_input:
+        # Store user message
         st.session_state.messages.append({"role": "user", "content": user_input})
         with st.chat_message("user"): 
             st.markdown(user_input)
@@ -171,3 +170,9 @@ if __name__=='__main__':
 
             st.session_state.messages.append(msg_to_store)
 
+    # Optional: show a message if a file was uploaded
+    if uploaded_file:
+        st.session_state.messages.append({
+            "role": "user",
+            "content": f"Uploaded file: {uploaded_file.name}"
+        })
