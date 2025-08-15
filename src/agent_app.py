@@ -121,19 +121,42 @@ def multiAgent(user_query: str) -> Tuple[str, str | None]:
     return asyncio.run(_multiAgent(user_input=user_query))
 
 # Streamlit UI (unchanged)
+import streamlit as st
+
 if __name__=='__main__':
     st.set_page_config(layout="wide")
     st.title("Multi-Agent Analysis Framework")
-    if 'messages' not in st.session_state: st.session_state.messages = []
+
+    # Initialize session state
+    if 'messages' not in st.session_state: 
+        st.session_state.messages = []
+
+    # File uploader
+    uploaded_file = st.file_uploader("Upload a file", type=["csv", "txt", "xlsx"])  # Adjust allowed file types as needed
+    if uploaded_file:
+        st.session_state.messages.append({
+            "role": "user",
+            "content": f"Uploaded file: {uploaded_file.name}"
+        })
+        st.success(f"File '{uploaded_file.name}' uploaded successfully!")
+
+    # Display chat messages
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
-            if message.get("image"): st.image(message["image"], caption="Generated Visualization")
+            if message.get("image"):
+                st.image(message["image"], caption="Generated Visualization")
+
+    # Chat input
     if user_input := st.chat_input("Hello! Please submit a question or request:"):
         st.session_state.messages.append({"role": "user", "content": user_input})
-        with st.chat_message("user"): st.markdown(user_input)
+        with st.chat_message("user"): 
+            st.markdown(user_input)
+        
         with st.spinner("Agents are collaborating on your request..."):
-            text_result, image_to_display = multiAgent(user_input)
+            # Pass uploaded_file if needed
+            text_result, image_to_display = multiAgent(user_input, uploaded_file=uploaded_file)
+
         with st.chat_message("assistant"):
             if text_result:
                 st.markdown(text_result)
@@ -141,7 +164,10 @@ if __name__=='__main__':
             else:
                 st.warning("The agent process completed, but no text output was returned.")
                 msg_to_store = {"role": "assistant", "content": "No text output was generated."}
+
             if image_to_display:
                 st.image(image_to_display, caption="Generated Visualization")
                 msg_to_store["image"] = image_to_display
+
             st.session_state.messages.append(msg_to_store)
+
