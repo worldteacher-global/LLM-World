@@ -2,4 +2,5 @@ llmenv/
 .env
 *.env
 Multi-Agent copy.ipynb
+agent_app copy.py
 src/__pycache__/
