@@ -1,20 +1,18 @@
 # ChatBot Generative AI
 import streamlit as st
-
 from openai import AzureOpenAI
-
+from dotenv import load_dotenv
 import os
 import requests
 
-endpoints = '<Enter-Azure-OpenAI-BaseURL>'
+load_dotenv('/home/sagemaker-user/user-default-efs/CLONED_REPOS/LLM-World/.env')
+endpoints = os.getenviron('AZURE_OPENAI_BASEURL') 
 
 api_response = requests.get(endpoints)
 payload = api_response.json()
 payload['nonprod'].keys()
 
 endpoint = payload['nonprod']['gpt-4.1'][0]['endpoint']
-
-os.environ['AZURE_OPENAI_KEY'] = '<Enter-Azure-OpenAI-API-Key>'
 
 client = AzureOpenAI(
 api_key=os.getenv('AZURE_OPENAI_KEY'),
