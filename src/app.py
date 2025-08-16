@@ -6,20 +6,22 @@ import os
 import requests
 
 load_dotenv('/home/sagemaker-user/user-default-efs/CLONED_REPOS/LLM-World/.env')
-endpoints = os.getenv('AZURE_OPENAI_BASEURL') 
-
-api_response = requests.get(endpoints)
-payload = api_response.json()
-payload['nonprod'].keys()
-
-endpoint = payload['nonprod']['gpt-4.1'][0]['endpoint']
-
-client = AzureOpenAI(
-api_key=os.getenv('AZURE_OPENAI_KEY'),
-api_version = '2024-12-01-preview',
-azure_endpoint = endpoint)
 
 def chat_gpt_41(ask_a_question):
+    
+    endpoints = os.getenv('AZURE_OPENAI_BASEURL')
+    api_response = requests.get(endpoints)
+
+    payload = api_response.json()
+    print(payload)
+
+    endpoint = payload['nonprod']['gpt-4.1'][0]['endpoint']
+
+    client = AzureOpenAI(
+    api_key=os.getenv('AZURE_OPENAI_KEY'),
+    api_version = '2024-12-01-preview',
+    azure_endpoint = endpoint)
+
     convo = []
     convo.append({'role':'user','content':ask_a_question})
     response = client.chat.completions.create(
