@@ -4,3 +4,4 @@ llmenv/
 Multi-Agent copy.ipynb
 agent_app copy.py
 src/__pycache__/
+myenv/

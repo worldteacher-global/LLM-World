@@ -6,7 +6,7 @@ import os
 import requests
 
 load_dotenv('/home/sagemaker-user/user-default-efs/CLONED_REPOS/LLM-World/.env')
-endpoints = os.getenviron('AZURE_OPENAI_BASEURL') 
+endpoints = os.getenv('AZURE_OPENAI_BASEURL') 
 
 api_response = requests.get(endpoints)
 payload = api_response.json()
