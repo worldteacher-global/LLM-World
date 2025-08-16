@@ -6,6 +6,6 @@
   * LangChain Agent
 * Multi-Agent (Agentic Workflow)
   * LangGraph Agent
-* Open Source
+* Open Weight
   * https://docs.aws.amazon.com/sagemaker/latest/dg/notebooks-available-instance-types.html
   * Fine-Tuning
