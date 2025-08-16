@@ -9,11 +9,9 @@ load_dotenv('/home/sagemaker-user/user-default-efs/CLONED_REPOS/LLM-World/.env')
 
 def chat_gpt_41(ask_a_question):
     
-    endpoints = os.getenv('AZURE_OPENAI_BASEURL')
-    api_response = requests.get(endpoints)
-
+    # endpoints = os.getenv('AZURE_OPENAI_BASEURL')
+    api_response = requests.get(os.getenv('AZURE_OPENAI_BASEURL'))
     payload = api_response.json()
-    print(payload)
 
     endpoint = payload['nonprod']['gpt-4.1'][0]['endpoint']
 
