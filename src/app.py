@@ -4,6 +4,8 @@ from openai import AzureOpenAI
 from dotenv import load_dotenv
 import os
 import requests
+import time
+import random
 
 load_dotenv('/home/ec2-user/BoW/LLM-World/.env')
 
@@ -32,21 +34,29 @@ def chat_gpt_41(ask_a_question):
 
     return reply
 
+# From streamlit doc    
+def response_generator(response):
+    # response = random.choice(
+    #     [
+    #         "Hello there! How can I assist you today?",
+    #         "Hi, human! Is there anything I can help you with?",
+    #         "Do you need help?",
+    #     ]
+    # )
+    for word in response.split():
+        yield word + " "
+        time.sleep(0.05)
 
 if __name__=='__main__':
     
     st.title('Just a General ChatBot')
 
-    # prompt = st.chat_input("Submit a question.")
-
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
-    
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
-
 
     if prompt := st.chat_input("Submit a question."):
 
@@ -56,7 +66,8 @@ if __name__=='__main__':
         st.session_state.messages.append({"role": "human","content":prompt})
         
         with st.chat_message("ai"):
-            st.markdown(chat_gpt_41(prompt))
+            response = chat_gpt_41(prompt)
+            st.markdown(response_generator(response))
         
         st.session_state.messages.append({"role":"ai", "content":chat_gpt_41(prompt)})
 
