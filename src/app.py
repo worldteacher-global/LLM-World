@@ -38,7 +38,7 @@ if __name__=='__main__':
     st.title('Just a General ChatBot')
 
     # prompt = st.chat_input("Submit a question.")
-    
+
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
@@ -48,7 +48,7 @@ if __name__=='__main__':
             st.markdown(message["content"])
 
 
-    if prompt := st.chat_input("Submit a question.")
+    if prompt := st.chat_input("Submit a question."):
         with st.chat_message("human"):
             st.markdown(prompt)
         
