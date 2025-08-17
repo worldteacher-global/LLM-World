@@ -58,7 +58,7 @@ if __name__=='__main__':
         with st.chat_message("ai"):
             st.markdown(chat_gpt_41(prompt))
         
-        st.session_state.messaeges.append({"role":"ai", "content":chat_gpt_41(prompt)})
+        st.session_state.messages.append({"role":"ai", "content":chat_gpt_41(prompt)})
 
 
         
