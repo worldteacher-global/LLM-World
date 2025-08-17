@@ -49,13 +49,14 @@ if __name__=='__main__':
 
 
     if prompt := st.chat_input("Submit a question."):
-        with st.chat_message("human"):
-            st.markdown(prompt)
-        
+
+        st.chat_message("human").markdown(prompt)
+        # with st.chat_message("human"):
+        #     st.markdown(prompt)        
         st.session_state.messages.append({"role": "human","content":prompt})
         
         with st.chat_message("ai"):
-            st.mardkdown(chat_gpt_41(prompt))
+            st.markdown(chat_gpt_41(prompt))
         
         st.session_state.messaeges.append({"role":"ai", "content":chat_gpt_41(prompt)})
 
