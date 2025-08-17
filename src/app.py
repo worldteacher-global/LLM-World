@@ -39,7 +39,8 @@ if __name__=='__main__':
 
     if prompt:
         with st.chat_message("ai"):
-            st.write(f"User has asked the following {prompt}")
+            st.write(f"{chat_gpt_41(prompt)}")
+            # st.write(f"User has asked the following {prompt}")
 
     # with st.chat_message("user"):
     #     st.write("Hey there! What's up?")
