@@ -65,15 +65,11 @@ if __name__=='__main__':
         #     st.markdown(prompt)        
         st.session_state.messages.append({"role": "human","content":prompt})
         
-        word = " "
         with st.chat_message("ai"):
             
-            response = chat_gpt_41(prompt)
+            response = " ".join(chat_gpt_41(prompt))
             
-            for chunk in response:
-                word += chunk
-
-            st.markdown(response_generator(word))
+            st.markdown(response_generator(response))
         
         st.session_state.messages.append({"role":"ai", "content":chat_gpt_41(prompt)})
 
