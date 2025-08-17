@@ -35,9 +35,15 @@ def chat_gpt_41(ask_a_question):
 
 if __name__=='__main__':
 
-    user_input = st.text_input("Submit a question or comment!!")
+    with st.chat_message("user"):
+        st.writre("Hey there! What's up?")
 
-    # st.title(chat_gpt_41(user_input))
-    st.write(chat_gpt_41(user_input))
+    # user_input = st.text_input("Submit a question or comment!!")
+    # st.write(chat_gpt_41(user_input))
+
+
+
+
+    # st.write(chat_gpt_41(user_input))
 
     
