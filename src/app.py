@@ -34,23 +34,43 @@ def chat_gpt_41(ask_a_question):
 
 
 if __name__=='__main__':
+    
+    st.title('Just a General ChatBot')
 
-    prompt = st.chat_input("Submit a question.")
+    # prompt = st.chat_input("Submit a question.")
+    
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
 
-    if prompt:
+    
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+
+    if prompt := st.chat_input("Submit a question.")
+        with st.chat_message("human"):
+            st.markdown(prompt)
+        
+        st.session_state.messages.append({"role": "human","content":prompt})
+        
         with st.chat_message("ai"):
-            st.write(f"{chat_gpt_41(prompt)}")
-            # st.write(f"User has asked the following {prompt}")
+            st.mardkdown(chat_gpt_41(prompt))
+        
+        st.session_state.messaeges.append({"role":"ai", "content":chat_gpt_41(prompt)})
 
-    # with st.chat_message("user"):
-    #     st.write("Hey there! What's up?")
 
-    # user_input = st.text_input("Submit a question or comment!!")
-    # st.write(chat_gpt_41(user_input))
+        
 
 
 
 
-    # st.write(chat_gpt_41(user_input))
+            
+
+ 
+
+
+
+
 
     
