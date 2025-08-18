@@ -130,16 +130,17 @@ async def StatAgent(query: str):
     return final_response['messages'][-1].content
 
 
-# def _StatAgent(query) -> str:
-#     return asyncio.run(StatAgent(query))  
-async def main(inp):
-    task = asyncio.create_task(StatAgent(inp))
-    await task
+def _StatAgent(query):
+    return asyncio.run(StatAgent(query))  
+
   
 
 
 if __name__=='__main__':
-    st.title('I am a Statistics Assistant')   
+    st.title('I am a Statistics Assistant') 
+
+    asyncio.get_running_loop()
+    st.write("loop running") 
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
@@ -155,13 +156,13 @@ if __name__=='__main__':
         
         with st.chat_message("assistant"):
             
-            response = asyncio.run(main(prompt))
+            # response = asyncio.run(main(prompt))
             # response = _StatAgent(prompt)
            
           
             # st.markdown(response_generator(response))            
-            st.markdown(response)        
-            st.session_state.messages.append({"role":"assistant", "content":response})       
+            st.markdown('AGENT')        
+            # st.session_state.messages.append({"role":"assistant", "content":response})       
 
     
     ## logic for file uploads     
