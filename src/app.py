@@ -90,12 +90,13 @@ if __name__=='__main__':
             with open(temp_file_path, "wb") as f:
                 f.write(file_uploaded.getbuffer())
             
-        st.success(f"File was saved at: {temp_file_path}")
-
+            st.success(f"File was saved at: {temp_file_path}")
+            
+            datafraem = pd.read_csv(temp_file_path)
+            st.dataframe(datafraem)
         # st.write(file_uploaded.name)
         # dataframe = pd.read_csv(file_uploaded)
-        datafraem = pd.read_csv(temp_file_path)
-        st.dataframe(datafraem)
+        
 
 
             
