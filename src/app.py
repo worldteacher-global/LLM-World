@@ -87,9 +87,9 @@ if __name__=='__main__':
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_file_path = os.path.join(temp_dir,file_uploaded.name)
 
-        with open(temp_file_path, "wb") as f:
-            f.write(file_uploaded.getbuffer())
-        
+            with open(temp_file_path, "wb") as f:
+                f.write(file_uploaded.getbuffer())
+            
         st.success(f"File was saved at: {temp_file_path}")
 
         # st.write(file_uploaded.name)
