@@ -3,6 +3,7 @@ ipykernel
 python-dotenv
 requests
 streamlit
+nest-asyncio
 tiktoken
 openai
 # AI Agent

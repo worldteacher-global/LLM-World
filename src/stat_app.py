@@ -15,6 +15,7 @@ from langgraph.checkpoint.memory import MemorySaver
 from langchain_aws import ChatBedrockConverse
 import streamlit as st
 import asyncio
+import nest_asyncio
 import pandas as pd
 import tempfile
 
@@ -135,6 +136,8 @@ def _StatAgent(query):
 
 
 if __name__=='__main__':
+    nest_asyncio.apply()
+    
     st.title('I am a Statistics Assistant') 
 
     if "messages" not in st.session_state:
@@ -149,7 +152,7 @@ if __name__=='__main__':
         st.chat_message("user").markdown(prompt)    
         st.session_state.messages.append({"role": "user","content":prompt})
         
-        # with st.chat_message("assistant"):
+        with st.chat_message("assistant"):
             
         #     response = _StatAgent(prompt)     
           
