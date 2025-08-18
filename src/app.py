@@ -95,7 +95,7 @@ if __name__=='__main__':
         # st.write(file_uploaded.name)
         # dataframe = pd.read_csv(file_uploaded)
         datafraem = pd.read_csv(temp_file_path)
-        st.dataframe(dataframe)
+        st.dataframe(datafraem)
 
 
             
