@@ -125,9 +125,26 @@ async def StatAgent(query: str):
     )
 
     ## Run to completion
-    final_response = await supervisor.ainvoke({'messages':[{'role':'user','content': [{'type': 'text', 'text':query}]}]}, config)
+    # final_response = await supervisor.ainvoke({'messages':[{'role':'user','content': [{'type': 'text', 'text':query}]}]}, config)
 
-    return final_response['messages'][-1].content
+    # return final_response['messages'][-1].content
+    async for chunk in supervisor.astream({'messages': [{'role': 'user', 'content': user_input}]}, config=config):
+        if "supervisor" in chunk:
+            messages = chunk["supervisor"].get("messages", [])
+            for message in messages:
+                # The final answer is now the content of the `final_answer` ToolMessage.
+                if isinstance(message, ToolMessage) and message.name == "final_answer":
+                    content = message.content
+                    # Check if the final answer also contains a base64 string
+                    if "base64_image:" in content:
+                        parts = content.split("base64_image:", 1)
+                        # Provide a nice default message if there's no other text
+                        final_text_response = parts[0].strip() if parts[0].strip() else "A visualization has been generated for you."
+                        base64_image_data = parts[1]
+                    else:
+                        final_text_response = content
+
+    return final_text_response
 
 def _StatAgent(query) -> str:
     return asyncio.run(StatAgent(query))    
@@ -150,7 +167,7 @@ if __name__=='__main__':
         st.session_state.messages.append({"role": "user","content":prompt})
         
         with st.chat_message("assistant"):
-                
+
             # st.markdown(response_generator(response))            
             st.markdown(_StatAgent(prompt))        
             st.session_state.messages.append({"role":"assistant", "content":_StatAgent(prompt)})       
