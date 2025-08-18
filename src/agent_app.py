@@ -128,6 +128,7 @@ if __name__=='__main__':
     st.set_page_config(layout="wide")
     st.title("Multi-Agent Analysis Framework")
     if 'messages' not in st.session_state: st.session_state.messages = []
+
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
@@ -154,12 +155,14 @@ if __name__=='__main__':
 
     file_uploaded = st.file_uploader("Upload a file.", type="csv")
 
-    if file_uploaded:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_file_path = os.path.join(temp_dir,file_uploaded.name)
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
 
+    if file_uploaded:
+        for file in file_uploaded:
+            file_path = os.path.join(UPLOAD_FOLDER,file.name)
             with open(temp_file_path, "wb") as f:
-                f.write(file_uploaded.getbuffer())
+                f.write(file.getbuffer())
             
-            st.success(f"File was saved at: {temp_file_path}")
-            st.write(temp_file_path)
+            st.success(f"File was saved at: {file_path}")
+
