@@ -130,20 +130,8 @@ async def StatAgent(query: str):
     return final_response['messages'][-1].content
 
 
-# def _StatAgent(query) -> str:
-#     return asyncio.run(StatAgent(query))  
-
 def _StatAgent(query) -> str:
-    try:
-        loop = asyncio.get_running_loop()
-    except RuntimeError:
-        loop = None
-
-    if loop and loop.is_running():
-        # If loop already running (Streamlit case)
-        return loop.run_until_complete(StatAgent(query))
-    else:
-        return asyncio.run(StatAgent(query))
+    return asyncio.run(StatAgent(query))  
   
 
 
@@ -159,15 +147,16 @@ if __name__=='__main__':
 
     if prompt := st.chat_input("Submit a question."):
 
-        st.chat_message("user").markdown(prompt)
-    
+        st.chat_message("user").markdown(prompt)    
         st.session_state.messages.append({"role": "user","content":prompt})
         
         with st.chat_message("assistant"):
 
-            response = _StatAgent(prompt)
+            # response = _StatAgent(prompt)
+            _response = st.experimental_async(StatAgent(prompt))
+            response = _response.result()
             # st.markdown(response_generator(response))            
-            st.markdown()        
+            st.markdown(response)        
             st.session_state.messages.append({"role":"assistant", "content":response})       
 
     
