@@ -130,8 +130,11 @@ async def StatAgent(query: str):
     return final_response['messages'][-1].content
 
 
-def _StatAgent(query) -> str:
-    return asyncio.run(StatAgent(query))  
+# def _StatAgent(query) -> str:
+#     return asyncio.run(StatAgent(query))  
+async def main(inp):
+    task = asyncio.create_task(StatAgent(inp))
+    await task
   
 
 
@@ -151,10 +154,11 @@ if __name__=='__main__':
         st.session_state.messages.append({"role": "user","content":prompt})
         
         with st.chat_message("assistant"):
-
+            
+            response = asyncio.run(main(prompt))
             # response = _StatAgent(prompt)
-            _response = st.experimental_async(StatAgent(prompt))
-            response = _response.result()
+           
+          
             # st.markdown(response_generator(response))            
             st.markdown(response)        
             st.session_state.messages.append({"role":"assistant", "content":response})       
