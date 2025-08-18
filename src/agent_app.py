@@ -20,6 +20,8 @@ from langchain_core.tools import tool
 from langgraph.graph import StateGraph, START, MessagesState, END
 from langchain_core.messages import AIMessage, BaseMessage, ToolMessage
 
+import tempfile
+
 # Final Answer Tool (unchanged)
 @tool
 def final_answer(answer: str) -> str:
