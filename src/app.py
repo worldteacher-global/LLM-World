@@ -91,9 +91,11 @@ if __name__=='__main__':
                 f.write(file_uploaded.getbuffer())
             
             st.success(f"File was saved at: {temp_file_path}")
-            
-            datafraem = pd.read_csv(temp_file_path)
-            st.dataframe(datafraem)
+            st.write(temp_fle_path.name)
+            # datafraem = pd.read_csv(temp_file_path)
+            # st.dataframe(datafraem)
+
+
         # st.write(file_uploaded.name)
         # dataframe = pd.read_csv(file_uploaded)
         
