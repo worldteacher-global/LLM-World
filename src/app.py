@@ -78,7 +78,8 @@ if __name__=='__main__':
 
     
     ## logic for file uploads
-
+    import pandas as pd
+    
     file_uploaded = st.file_uploader("Upload a file.", type="csv")
 
     if file_uploaded:
