@@ -15,6 +15,8 @@ from langgraph.checkpoint.memory import MemorySaver
 from langchain_aws import ChatBedrockConverse
 import streamlit as st
 import asyncio
+import pandas as pd
+import tempfile
 
 async def StatAgent(query: str):
     load_dotenv('/home/sagemaker-user/user-default-efs/CLONED_REPOS/LLM-World/.env')
@@ -125,7 +127,7 @@ async def StatAgent(query: str):
     ## Run to completion
     final_response = await supervisor.ainvoke({'messages':[{'role':'user','content': [{'type': 'text', 'text':query}]}]}, config)
 
-    return final_response
+    return final_response['messages'][-1].content
 
 
 if __name__=='__main__':
@@ -155,18 +157,16 @@ if __name__=='__main__':
             st.session_state.messages.append({"role":"assistant", "content":response})       
 
     
-    ## logic for file uploads
-    import pandas as pd
-    import tempfile
+        ## logic for file uploads     
 
-    file_uploaded = st.file_uploader("Upload a file.", type="csv")
+        file_uploaded = st.file_uploader("Upload a file.", type="csv")
 
-    if file_uploaded:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_file_path = os.path.join(temp_dir,file_uploaded.name)
+        if file_uploaded:
+            with tempfile.TemporaryDirectory() as temp_dir:
+                temp_file_path = os.path.join(temp_dir,file_uploaded.name)
 
-            with open(temp_file_path, "wb") as f:
-                f.write(file_uploaded.getbuffer())
-            
-            st.success(f"File was saved at: {temp_file_path}")
-            st.write(temp_fle_path.name)
+                with open(temp_file_path, "wb") as f:
+                    f.write(file_uploaded.getbuffer())
+                
+                st.success(f"File was saved at: {temp_file_path}")
+                st.write(temp_fle_path.name)
