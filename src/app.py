@@ -51,7 +51,7 @@ if __name__=='__main__':
     
     st.title('Just a General ChatBot')
 
-    st.file_uploader("Upload a file.", type="csv")
+   
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
@@ -74,12 +74,16 @@ if __name__=='__main__':
             # st.markdown(response_generator(response))
             st.markdown(chat_gpt_41(prompt))
         
-        st.session_state.messages.append({"role":"ai", "content":chat_gpt_41(prompt)})
+        st.session_state.messages.append({"role":"ai", "content":chat_gpt_41(prompt)})       
 
+    
+    ## logic for file uploads
 
-        
+    file_uploaded = st.file_uploader("Upload a file.", type="csv")
 
-
+    if file_uploaded:
+        dataframe = pd.read_csv(file_uploaded)
+        st.dataframe(dataframe)
 
 
             
