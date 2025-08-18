@@ -135,45 +135,41 @@ if __name__=='__main__':
             st.markdown(message["content"])
             if message.get("image"): st.image(message["image"], caption="Generated Visualization")
     
-    with st._bottom:
-        col1, col2 = st.columns([4, 1]) # Adjust ratios as needed
 
-        with col1:
-                   
-            if user_input := st.chat_input("Hello! Please submit a question or request:"):
-                st.session_state.messages.append({"role": "user", "content": user_input})
-                
-                with st.chat_message("user"): st.markdown(user_input)
-                
-                with st.spinner("Agents are collaborating on your request..."):
-                    text_result, image_to_display = multiAgent(user_input)
-                
-                with st.chat_message("assistant"):
-                    if text_result:
-                        st.markdown(text_result)
-                        msg_to_store = {"role": "assistant", "content": text_result}
-                    else:
-                        st.warning("The agent process completed, but no text output was returned.")
-                        msg_to_store = {"role": "assistant", "content": "No text output was generated."}
-                    if image_to_display:
-                        st.image(image_to_display, caption="Generated Visualization")
-                        msg_to_store["image"] = image_to_display
-                    st.session_state.messages.append(msg_to_store)
+            
+    if user_input := st.chat_input("Hello! Please submit a question or request:"):
+        st.session_state.messages.append({"role": "user", "content": user_input})
+        
+        with st.chat_message("user"): st.markdown(user_input)
+        
+        with st.spinner("Agents are collaborating on your request..."):
+            text_result, image_to_display = multiAgent(user_input)
+        
+        with st.chat_message("assistant"):
+            if text_result:
+                st.markdown(text_result)
+                msg_to_store = {"role": "assistant", "content": text_result}
+            else:
+                st.warning("The agent process completed, but no text output was returned.")
+                msg_to_store = {"role": "assistant", "content": "No text output was generated."}
+            if image_to_display:
+                st.image(image_to_display, caption="Generated Visualization")
+                msg_to_store["image"] = image_to_display
+            st.session_state.messages.append(msg_to_store)
 
-        with col2:
-            ## logic for file uploads     
-            file_uploaded = st.file_uploader("Upload a file.", type="csv")
+    ## logic for file uploads     
+    file_uploaded = st.file_uploader("Upload a file.", type="csv")
 
-            UPLOAD_FOLDER = "uploaded_file"
-            if not os.path.exists(UPLOAD_FOLDER):
-                os.makedirs(UPLOAD_FOLDER)
+    UPLOAD_FOLDER = "uploaded_file"
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
 
-            if file_uploaded:
-                file_path = os.path.join(UPLOAD_FOLDER,file_uploaded.name)
-                with open(file_path, "wb") as f:
-                    f.write(file_uploaded.getbuffer())
-                    
-                # st.success(f"File was saved at: {file_path}")
+    if file_uploaded:
+        file_path = os.path.join(UPLOAD_FOLDER,file_uploaded.name)
+        with open(file_path, "wb") as f:
+            f.write(file_uploaded.getbuffer())
+            
+        # st.success(f"File was saved at: {file_path}")
 
 
 
