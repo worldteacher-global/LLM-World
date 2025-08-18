@@ -137,7 +137,7 @@ def _StatAgent(query):
 
 if __name__=='__main__':
     nest_asyncio.apply()
-    
+
     st.title('I am a Statistics Assistant') 
 
     if "messages" not in st.session_state:
@@ -154,11 +154,11 @@ if __name__=='__main__':
         
         with st.chat_message("assistant"):
             
-        #     response = _StatAgent(prompt)     
+            response = _StatAgent(prompt)     
           
-        #     st.write(response_generator(response))            
+            st.write(response_generator(response))            
      
-        #     st.session_state.messages.append({"role":"assistant", "content":response})       
+            st.session_state.messages.append({"role":"assistant", "content":response})       
 
     
     ## logic for file uploads     
