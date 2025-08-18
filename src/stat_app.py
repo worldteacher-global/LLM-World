@@ -147,12 +147,12 @@ if __name__=='__main__':
         
         with st.chat_message("assistant"):
             
-            # response = " ".join(StatAgent(prompt))                
+            response = await StatAgent(prompt)                
             # st.markdown(response_generator(response))
             
-            st.markdown(await StatAgent(prompt))
+            st.markdown(response)
         
-        st.session_state.messages.append({"role":"assistant", "content":await StatAgent(prompt)})       
+            st.session_state.messages.append({"role":"assistant", "content":response})       
 
     
     ## logic for file uploads
