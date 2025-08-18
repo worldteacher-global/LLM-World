@@ -129,7 +129,11 @@ async def StatAgent(query: str):
 
     return final_response['messages'][-1].content
 
-def main():
+def _StatAgent(query) -> str:
+    return asyncio.run(StatAgent(query))    
+
+
+if __name__=='__main__':
     st.title('I am a Statistics Assistant')   
 
     if "messages" not in st.session_state:
@@ -146,8 +150,8 @@ def main():
         st.session_state.messages.append({"role": "user","content":prompt})
         
         with st.chat_message("assistant"):
-            
-            response = asyncio.run(StatAgent(prompt))
+
+            response = _StatAgent(prompt)
             # st.markdown(response_generator(response))            
             st.markdown(response)        
             st.session_state.messages.append({"role":"assistant", "content":response})       
@@ -166,10 +170,6 @@ def main():
             
             st.success(f"File was saved at: {temp_file_path}")
             st.write(temp_fle_path.name)
-
-
-if __name__=='__main__':
-    main()
 
     
     
