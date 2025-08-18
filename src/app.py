@@ -51,6 +51,8 @@ if __name__=='__main__':
     
     st.title('Just a General ChatBot')
 
+    st.file_uploader("Upload a file.", type="csv")
+
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
@@ -69,7 +71,8 @@ if __name__=='__main__':
             
             response = " ".join(chat_gpt_41(prompt))
             
-            st.markdown(response_generator(response))
+            # st.markdown(response_generator(response))
+            st.markdown(chat_gpt_41(prompt))
         
         st.session_state.messages.append({"role":"ai", "content":chat_gpt_41(prompt)})
 
