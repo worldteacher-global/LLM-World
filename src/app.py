@@ -79,13 +79,23 @@ if __name__=='__main__':
     
     ## logic for file uploads
     import pandas as pd
+    import tempfile
 
     file_uploaded = st.file_uploader("Upload a file.", type="csv")
 
     if file_uploaded:
-        st.write(file_uploaded.name)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_file_path = os.path.join(temp_dir,file_uploaded.name)
+
+        with open(temp_file_path, "wb") as f:
+            f.write(file_uploaded.getbuffer())
+        
+        st.success(f"File was saved at: {temp_file_path}")
+
+        # st.write(file_uploaded.name)
         # dataframe = pd.read_csv(file_uploaded)
-        # st.dataframe(dataframe)
+        datafraem = pd.read_csv(temp_file_path)
+        st.dataframe(dataframe)
 
 
             
