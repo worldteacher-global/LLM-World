@@ -155,6 +155,7 @@ if __name__=='__main__':
 
     file_uploaded = st.file_uploader("Upload a file.", type="csv")
 
+    UPLOAD_FOLDER = "uploaded_file"
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
 
