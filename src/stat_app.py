@@ -13,10 +13,10 @@ from langgraph.graph import StateGraph, START, MessagesState, END
 from langgraph.types import Command
 from langgraph.checkpoint.memory import MemorySaver
 from langchain_aws import ChatBedrockConverse
-import streamlt as st
+import streamlit as st
+import asyncio
 
-
-def StatAgent(query: str):
+async def StatAgent(query: str):
     load_dotenv('/home/sagemaker-user/user-default-efs/CLONED_REPOS/LLM-World/.env')
 
     ## Statistics Agent  ##
@@ -122,50 +122,51 @@ def StatAgent(query: str):
         .compile()
     )
 
-    return
+    ## Run to completion
+    final_response = await supervisor.ainvoke({'messages':[{'role':'user','content': [{'type': 'text', 'text':query}]}]}, config)
 
-    # async for chunk in supervisor.astream({'messages':[{'role':'user','content': [{'type': 'text', 'text':query}]}]}):
-    #     helper.clean_print_msgs(chunk, last_message=True)
+    return final_response
 
-    if __name__=='__main__':
+
+if __name__=='__main__':
+
+    st.title('I am a Statistics Assistant')   
+
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    if prompt := st.chat_input("Submit a question."):
+
+        st.chat_message("user").markdown(prompt)
     
-        st.title('I am a Statistics Assistant')   
-
-        if "messages" not in st.session_state:
-            st.session_state.messages = []
-
-        for message in st.session_state.messages:
-            with st.chat_message(message["role"]):
-                st.markdown(message["content"])
-
-        if prompt := st.chat_input("Submit a question."):
-
-            st.chat_message("user").markdown(prompt)
-       
-            st.session_state.messages.append({"role": "user","content":prompt})
-            
-            with st.chat_message("assistant"):
-                
-                # response = " ".join(StatAgent(prompt))                
-                # st.markdown(response_generator(response))
-                
-                st.markdown(chat_gpt_41(prompt))
-            
-            st.session_state.messages.append({"role":"assistant", "content":StatAgent(prompt)})       
-
+        st.session_state.messages.append({"role": "user","content":prompt})
         
-        ## logic for file uploads
-        import pandas as pd
-        import tempfile
+        with st.chat_message("assistant"):
+            
+            # response = " ".join(StatAgent(prompt))                
+            # st.markdown(response_generator(response))
+            
+            st.markdown(await StatAgent(prompt))
+        
+        st.session_state.messages.append({"role":"assistant", "content":await StatAgent(prompt)})       
 
-        file_uploaded = st.file_uploader("Upload a file.", type="csv")
+    
+    ## logic for file uploads
+    import pandas as pd
+    import tempfile
 
-        if file_uploaded:
-            with tempfile.TemporaryDirectory() as temp_dir:
-                temp_file_path = os.path.join(temp_dir,file_uploaded.name)
+    file_uploaded = st.file_uploader("Upload a file.", type="csv")
 
-                with open(temp_file_path, "wb") as f:
-                    f.write(file_uploaded.getbuffer())
-                
-                st.success(f"File was saved at: {temp_file_path}")
-                st.write(temp_fle_path.name)
+    if file_uploaded:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_file_path = os.path.join(temp_dir,file_uploaded.name)
+
+            with open(temp_file_path, "wb") as f:
+                f.write(file_uploaded.getbuffer())
+            
+            st.success(f"File was saved at: {temp_file_path}")
+            st.write(temp_fle_path.name)
