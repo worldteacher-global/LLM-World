@@ -162,4 +162,4 @@ if __name__=='__main__':
                 f.write(file_uploaded.getbuffer())
             
             st.success(f"File was saved at: {temp_file_path}")
-            st.write(temp_file_path.name)
+            st.write(temp_file_path)
