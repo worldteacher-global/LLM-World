@@ -131,6 +131,7 @@ async def StatAgent(query: str):
 
 
 if __name__=='__main__':
+
     async def main():
         st.title('I am a Statistics Assistant')   
 
@@ -171,4 +172,4 @@ if __name__=='__main__':
                 st.success(f"File was saved at: {temp_file_path}")
                 st.write(temp_fle_path.name)
 
-    main()
+    await main()
