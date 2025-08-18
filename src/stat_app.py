@@ -150,11 +150,10 @@ if __name__=='__main__':
         st.session_state.messages.append({"role": "user","content":prompt})
         
         with st.chat_message("assistant"):
-
-            response = _StatAgent(prompt)
+                
             # st.markdown(response_generator(response))            
-            st.markdown(response)        
-            st.session_state.messages.append({"role":"assistant", "content":response})       
+            st.markdown(_StatAgent(prompt))        
+            st.session_state.messages.append({"role":"assistant", "content":_StatAgent(prompt)})       
 
     
     ## logic for file uploads     
