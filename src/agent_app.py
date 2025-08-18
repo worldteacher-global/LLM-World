@@ -160,7 +160,7 @@ if __name__=='__main__':
         os.makedirs(UPLOAD_FOLDER)
 
     if file_uploaded:
-        file_path = os.path.join(UPLOAD_FOLDER,file.name)
+        file_path = os.path.join(UPLOAD_FOLDER,file_uploaded.name)
         with open(temp_file_path, "wb") as f:
             f.write(file_uploaded.getbuffer())
             
