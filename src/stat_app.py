@@ -176,7 +176,7 @@ if __name__=='__main__':
             else:
                 response = response_future           
           
-            st.markdown(response_generator(response))            
+            st.write(response_generator(response))            
      
             st.session_state.messages.append({"role":"assistant", "content":response})       
 
