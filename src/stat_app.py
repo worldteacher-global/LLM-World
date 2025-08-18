@@ -131,32 +131,32 @@ async def StatAgent(query: str):
 
 
 if __name__=='__main__':
+    async def main():
+        st.title('I am a Statistics Assistant')   
 
-    st.title('I am a Statistics Assistant')   
+        if "messages" not in st.session_state:
+            st.session_state.messages = []
 
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
+        for message in st.session_state.messages:
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
 
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+        if prompt := st.chat_input("Submit a question."):
 
-    if prompt := st.chat_input("Submit a question."):
-
-        st.chat_message("user").markdown(prompt)
-    
-        st.session_state.messages.append({"role": "user","content":prompt})
+            st.chat_message("user").markdown(prompt)
         
-        with st.chat_message("assistant"):
+            st.session_state.messages.append({"role": "user","content":prompt})
             
-            response = asyncio.run(StatAgent(prompt)                )
-            # st.markdown(response_generator(response))
+            with st.chat_message("assistant"):
+                
+                response = await StatAgent(prompt)
+                # st.markdown(response_generator(response))
+                
+                st.markdown(response)
             
-            st.markdown(response)
-        
-            st.session_state.messages.append({"role":"assistant", "content":response})       
+                st.session_state.messages.append({"role":"assistant", "content":response})       
 
-    
+        
         ## logic for file uploads     
 
         file_uploaded = st.file_uploader("Upload a file.", type="csv")
@@ -170,3 +170,5 @@ if __name__=='__main__':
                 
                 st.success(f"File was saved at: {temp_file_path}")
                 st.write(temp_fle_path.name)
+
+    main()
