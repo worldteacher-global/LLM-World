@@ -146,3 +146,18 @@ if __name__=='__main__':
                 st.image(image_to_display, caption="Generated Visualization")
                 msg_to_store["image"] = image_to_display
             st.session_state.messages.append(msg_to_store)
+
+
+      ## logic for file uploads     
+
+    file_uploaded = st.file_uploader("Upload a file.", type="csv")
+
+    if file_uploaded:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_file_path = os.path.join(temp_dir,file_uploaded.name)
+
+            with open(temp_file_path, "wb") as f:
+                f.write(file_uploaded.getbuffer())
+            
+            st.success(f"File was saved at: {temp_file_path}")
+            st.write(temp_file_path.name)
