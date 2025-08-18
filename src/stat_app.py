@@ -172,4 +172,4 @@ if __name__=='__main__':
                 st.success(f"File was saved at: {temp_file_path}")
                 st.write(temp_fle_path.name)
 
-    await main()
+    asyncio.run(main())
