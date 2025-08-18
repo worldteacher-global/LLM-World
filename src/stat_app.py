@@ -130,11 +130,25 @@ async def StatAgent(query: str):
     return final_response['messages'][-1].content
 
 
-def _StatAgent(query):
-    return await StatAgent(query)  
-    # return asyncio.run(StatAgent(query))  
+# def _StatAgent(query):    
+#     return asyncio.run(StatAgent(query))  
 
-  
+def run_async(coro):
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = None
+
+    if loop and loop.is_running():
+        # Schedule on running loop
+        task = asyncio.create_task(coro)
+        return task
+    else:
+        # No running loop, safe to run directly
+        return asyncio.run(coro)
+
+def _StatAgent(query):
+    return run_async(StatAgent(query))  
 
 
 if __name__=='__main__':
@@ -154,7 +168,13 @@ if __name__=='__main__':
         
         with st.chat_message("assistant"):
             
-            response = _StatAgent(prompt)           
+            # response = _StatAgent(prompt)
+            response_future = _StatAgent(prompt)
+
+            if isinstance(response_future, asyncio.Task):
+                response = asyncio.run(response_future)  # wait until done
+            else:
+                response = response_future           
           
             st.markdown(response_generator(response))            
      
