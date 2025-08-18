@@ -147,7 +147,7 @@ if __name__=='__main__':
         
         with st.chat_message("assistant"):
             
-            response = await StatAgent(prompt)                
+            response = asyncio.run(StatAgent(prompt)                )
             # st.markdown(response_generator(response))
             
             st.markdown(response)
