@@ -160,10 +160,9 @@ if __name__=='__main__':
         os.makedirs(UPLOAD_FOLDER)
 
     if file_uploaded:
-        for file in file_uploaded:
-            file_path = os.path.join(UPLOAD_FOLDER,file.name)
-            with open(temp_file_path, "wb") as f:
-                f.write(file.getbuffer())
+        file_path = os.path.join(UPLOAD_FOLDER,file.name)
+        with open(temp_file_path, "wb") as f:
+            f.write(file.getbuffer())
             
-            st.success(f"File was saved at: {file_path}")
+        st.success(f"File was saved at: {file_path}")
 
