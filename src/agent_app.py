@@ -158,6 +158,7 @@ if __name__=='__main__':
             st.session_state.messages.append(msg_to_store)
 
     ## logic for file uploads     
+    
     file_uploaded = st.file_uploader("Upload a file.", type="csv")
 
     UPLOAD_FOLDER = "uploaded_file"
