@@ -129,47 +129,48 @@ async def StatAgent(query: str):
 
     return final_response['messages'][-1].content
 
+def main():
+    st.title('I am a Statistics Assistant')   
+
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    if prompt := st.chat_input("Submit a question."):
+
+        st.chat_message("user").markdown(prompt)
+    
+        st.session_state.messages.append({"role": "user","content":prompt})
+        
+        with st.chat_message("assistant"):
+            
+            response = asyncio.run(StatAgent(prompt))
+            # st.markdown(response_generator(response))            
+            st.markdown(response)        
+            st.session_state.messages.append({"role":"assistant", "content":response})       
+
+    
+    ## logic for file uploads     
+
+    file_uploaded = st.file_uploader("Upload a file.", type="csv")
+
+    if file_uploaded:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_file_path = os.path.join(temp_dir,file_uploaded.name)
+
+            with open(temp_file_path, "wb") as f:
+                f.write(file_uploaded.getbuffer())
+            
+            st.success(f"File was saved at: {temp_file_path}")
+            st.write(temp_fle_path.name)
+
 
 if __name__=='__main__':
+    main()
 
-    async def main():
-        st.title('I am a Statistics Assistant')   
+    
+    
 
-        if "messages" not in st.session_state:
-            st.session_state.messages = []
-
-        for message in st.session_state.messages:
-            with st.chat_message(message["role"]):
-                st.markdown(message["content"])
-
-        if prompt := st.chat_input("Submit a question."):
-
-            st.chat_message("user").markdown(prompt)
-        
-            st.session_state.messages.append({"role": "user","content":prompt})
-            
-            with st.chat_message("assistant"):
-                
-                response = await StatAgent(prompt)
-                # st.markdown(response_generator(response))
-                
-                st.markdown(response)
-            
-                st.session_state.messages.append({"role":"assistant", "content":response})       
-
-        
-        ## logic for file uploads     
-
-        file_uploaded = st.file_uploader("Upload a file.", type="csv")
-
-        if file_uploaded:
-            with tempfile.TemporaryDirectory() as temp_dir:
-                temp_file_path = os.path.join(temp_dir,file_uploaded.name)
-
-                with open(temp_file_path, "wb") as f:
-                    f.write(file_uploaded.getbuffer())
-                
-                st.success(f"File was saved at: {temp_file_path}")
-                st.write(temp_fle_path.name)
-
-    asyncio.run(main())
