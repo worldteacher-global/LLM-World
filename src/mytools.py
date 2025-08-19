@@ -73,7 +73,7 @@ class MyTools:
         F_stat = MS / MSE
         pval = 1 - f.cdf(F_stat, k - 1, N - k)
         payload = {"test":"one_way_anova",
-        "F":float(f_stat),
+        "F":float(F_stat),
         "P_val":float(pval)}
         return payload
 
@@ -105,8 +105,8 @@ class MyTools:
         for col in df.columns:
             tstat, pval = shapiro(df[col])
             if pval < 0.05:
-                return f'Column {col} is not normally distributed, and not recommended to include in ANOVA analysis'
-        return 'Data is normal'
+                return {'result':f'Column {col} is not normally distributed, and not recommended to include in ANOVA analysis'}
+        return {'result':'Data is normal'}
 
     # @tool
     # @staticmethod
