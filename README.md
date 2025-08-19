@@ -13,4 +13,5 @@
 
 # Dockerfile
 * docker build -t llm-image . (build iamge)
-* docker run -it --name llm-container --gpus all -v host-path:container-path llm-image:latests (build/run container)
+* docker run -it --name llm-container --gpus all -v host-path:container-path llm-image:latests (build/run container) [-p 8888:8888] if running server
+
