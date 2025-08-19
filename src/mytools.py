@@ -84,7 +84,7 @@ class MyTools:
         df = pd.read_csv(path)
         cov = df.cov()
         return DataFramePayload(
-            columns=cov.columns.tolist(),
+            columns=df.columns.tolist(),
             data=cov.values.tolist())
 
     @tool
@@ -92,7 +92,10 @@ class MyTools:
     def correlation_tool(path: str):
         '''Calculate correlation'''
         df = pd.read_csv(path)
-        return df.corr()
+        corr = df.corr()
+        return DataFramePayload(
+            columns=df.columns.tolist(),
+            data=corr.values.tolist())
         
     @tool
     @staticmethod
