@@ -23,6 +23,7 @@ linkup-sdk
 langchain-mcp-adapters
 langchain-text-splitters
 langchain-openai
+pydantic
 #----------------------OSS--------------
 transformers
 accelerate
