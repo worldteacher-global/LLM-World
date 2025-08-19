@@ -7,8 +7,17 @@ apt-get install -y git \
 WORKDIR /app
 
 COPY requirements.txt .
+COPY . .
 
 RUN pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+RUN pip install jupyter
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ["bash/"]
+# if runninng jupyter notebook
+# EXPOSE 8888
+
+# Run an interactive shell by default
+CMD ["/bin/bash"] 
+
+## Run a Jupyter Notebook server
+# CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
