@@ -9,4 +9,8 @@
 * Open Weight
   * https://docs.aws.amazon.com/sagemaker/latest/dg/notebooks-available-instance-types.html
   * Fine-Tuning
-docker run -it --name llm-container --gpus all llm-image:latest
+
+
+# Dockerfile
+docker build -t llm-image:latest . (build iamge)
+docker run -it --name llm-container --gpus all -v <host-path>:<container-path> llm-image:latests
