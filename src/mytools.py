@@ -8,9 +8,12 @@ import ast
 import requests
 import io
 import base64
+from pydantic import BaseModel
+from typing import List
 
-
-
+class DataFramePayload(BaseModel):
+    columns: List[str]
+    data: List[List[float]]
 
 class MyTools:
 ####################################################### TOOLS ############################################################
@@ -28,7 +31,10 @@ class MyTools:
         eigenvalue = eigenvalue[::-1]
         eigenvector = eigenvector[:, ::-1]
         transformed_data = standardized_data @ np.vstack((eigenvector[:, 0], eigenvector[:, 1])).T
-        return [transformed_data[:, 0].tolist(), transformed_data[:, 1].tolist()]
+        payload = {
+            "PC1":transformed_data[:,0].tolist(),
+            "PC2":transformed_data[:,1].tolist()}
+        return payload
 
     @tool
     @staticmethod
@@ -44,7 +50,10 @@ class MyTools:
         Z = np.sum([np.sum(Zij[i]) for i in range(k)]) / N
         W = ((N - k) / (k - 1)) * (np.sum(Ni * (np.array(Zi) - Z) ** 2) / np.sum([np.sum((Zij[i] - Zi[i]) ** 2) for i in range(k)]))
         pval = 1 - f.cdf(W, k - 1, N - k)
-        return W, pval
+        payload = {
+            "W":float(W),
+            "Pval":pval}
+        return payload
 
     @tool
     @staticmethod
@@ -63,14 +72,20 @@ class MyTools:
         MSE = SSE / (N - k)
         F_stat = MS / MSE
         pval = 1 - f.cdf(F_stat, k - 1, N - k)
-        return F_stat, pval
+        payload = {"test":"one_way_anova",
+        "F":float(f_stat),
+        "P_val":float(pval)}
+        return payload
 
     @tool
     @staticmethod
     def covariance_tool(path: str):
         '''Calculate covariance'''
         df = pd.read_csv(path)
-        return df.cov()
+        cov = df.cov()
+        return DataFramePayload(
+            columns=cov.columns.tolist(),
+            data=cov.values.tolist())
 
     @tool
     @staticmethod
@@ -89,162 +104,219 @@ class MyTools:
             if pval < 0.05:
                 return f'Column {col} is not normally distributed, and not recommended to include in ANOVA analysis'
         return 'Data is normal'
+
+    # @tool
+    # @staticmethod
+    # def display_base64_image(base64_string):
+    #     """
+    #     Displays a base64-encoded image string
+    #     """
+    #     # Remove the prefix if it exists
+    #     if base64_string.startswith("base64_image:"):
+    #         base64_string = base64_string[13:]  # Remove "base64_image:" prefix
+        
+    #     # Decode the base64 string
+    #     img_data = base64.b64decode(base64_string)
+        
+    #     # Create an image from the decoded data
+    #     img = Image.open(io.BytesIO(img_data))
+        
+    #     # Save to a temporary file to display
+    #     img.save("temp_plot.png")
+    #     return img
+
+    # @tool
+    # @staticmethod
+    # def gen_plot(plot_type: str = "line", 
+    #             title: str = "Plot", 
+    #             x: [list] = None, 
+    #             y: [list] = None, 
+    #             label: [list] = None, 
+    #             path: [str] = None) -> str:
+    #     """
+    #     Generates a plot using Matplotlib and returns a prefixed base64-encoded PNG string.
+    #     Args:
+    #         plot_type: 'line', 'bar', or 'scatter'
+    #         title: title of the plot
+    #         x: list of x values
+    #         y: list of y values
+    #         label: list of labels (only used for scatter with colors)
+    #         path: optional path to a CSV file for data
+    #     """
+    #     try:
+    #         # Import inside function to avoid issues
+    #         import matplotlib
+    #         matplotlib.use('Agg')  # Use non-interactive backend - CRITICAL FIX
+    #         import matplotlib.pyplot as plt
+    #         import pandas as pd
+    #         import numpy as np
+    #         import io
+    #         import base64
+            
+    #         # Clear any existing plots - IMPORTANT
+    #         plt.clf()
+    #         plt.close('all')
+            
+    #         # Create new figure
+    #         fig = plt.figure(figsize=(10, 6))
+            
+    #         # If path is provided, try to load data from it
+    #         if path:
+    #             try:
+    #                 df = pd.read_csv(path)
+    #                 if df.empty:
+    #                     return "Error: CSV file is empty"
+    #                 x = df.iloc[:, 0].tolist()
+    #                 y = df.iloc[:, 1].tolist() if df.shape[1] > 1 else [0] * len(x)
+    #                 if df.shape[1] > 2:
+    #                     label = df.iloc[:, 2].tolist()
+    #             except FileNotFoundError:
+    #                 return f"Error: File not found - {path}"
+    #             except Exception as e:
+    #                 return f"Error: Could not read data from {path} - {str(e)}"
+            
+    #         # Use default data if none is provided
+    #         if x is None or len(x) == 0: 
+    #             x = [1, 2, 3]
+    #         if y is None or len(y) == 0: 
+    #             y = [1, 4, 9]
+                
+    #         # Ensure x and y have same length
+    #         min_len = min(len(x), len(y))
+    #         x = x[:min_len]
+    #         y = y[:min_len]
+            
+    #         # Convert to numeric types if possible
+    #         try:
+    #             x = [float(val) if not pd.isna(val) else 0 for val in x]
+    #             y = [float(val) if not pd.isna(val) else 0 for val in y]
+    #         except (ValueError, TypeError):
+    #             # If conversion fails, try to use as is
+    #             pass
+            
+    #         # Create the plot based on type
+    #         if plot_type == "line":
+    #             plt.plot(x, y, marker='o', linestyle='-', linewidth=2, markersize=6)
+    #         elif plot_type == "bar":
+    #             # For bar plots, x should be indices or categories
+    #             if isinstance(x[0], str):
+    #                 x_pos = range(len(x))
+    #                 plt.bar(x_pos, y)
+    #                 plt.xticks(x_pos, x, rotation=45, ha='right')
+    #             else:
+    #                 plt.bar(x, y)
+    #         elif plot_type == "scatter":
+    #             if label is not None and len(label) > 0:
+    #                 try:
+    #                     # Try to convert labels to numeric for coloring
+    #                     numeric_label = pd.to_numeric(label[:min_len], errors='coerce')
+    #                     # Replace NaN with 0
+    #                     numeric_label = [0 if pd.isna(val) else val for val in numeric_label]
+    #                     scatter = plt.scatter(x, y, c=numeric_label, cmap='viridis', s=50)
+    #                     plt.colorbar(scatter, label='Label Values')
+    #                 except Exception:
+    #                     # If numeric conversion fails, just plot without colors
+    #                     plt.scatter(x, y, s=50)
+    #             else:
+    #                 plt.scatter(x, y, s=50)
+    #         else:
+    #             plt.close('all')
+    #             return f"Error: Unsupported plot_type: {plot_type}. Use 'line', 'bar', or 'scatter'"
+    #         plt.show()
+    #         # Add labels and title
+    #         plt.title(title, fontsize=14, fontweight='bold')
+    #         plt.xlabel("X-axis", fontsize=12)
+    #         plt.ylabel("Y-axis", fontsize=12)
+    #         plt.grid(True, alpha=0.3)
+    #         plt.tight_layout()
+            
+    #         # Save to bytes buffer
+    #         buf = io.BytesIO()
+    #         plt.savefig(buf, format='png', dpi=100, bbox_inches='tight')
+    #         buf.seek(0)
+            
+    #         # Encode to base64
+    #         img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+            
+    #         # Clean up
+    #         buf.close()
+    #         plt.close(fig)
+    #         plt.close('all')
+            
+    #         # Return with prefix for easy parsing
+    #         return f"base64_image:{img_base64}"
+            
+    #     except Exception as e:
+    #         # Ensure cleanup even on error
+    #         try:
+    #             plt.close('all')
+    #         except:
+    #             pass
+    #         return f"Error: Failed to generate plot - {str(e)}"
+
+# # Test the function
+# result = gen_plot(plot_type="line", title="Test Plot", x=[1, 2, 3, 4, 5], y=[2, 4, 1, 3, 5])
+# print(f"Result length: {len(result)}")
+# print(f"Result starts with: {result[:50]}...")
+# print("\nFunction executed successfully!")
+   
     @tool
-    def gen_plot(self, plot_type: str = "line", title: str = "Plot", x: list | None = None, y: list | None = None, label: list | None = None, path: str | None = None) -> str:
+    @staticmethod
+    def gen_plot(plot_type: str = "line", title: str = "Plot", x: list | None = None, y: list | None = None, label: list | None = None,path: str | None = None) -> str:
         """
-        Generates a plot using Matplotlib and returns a prefixed base64-encoded PNG string.
+        Generate a plot using Matplotlib. Returns base64-encoded PNG string.
+        
         Args:
             plot_type: 'line', 'bar', or 'scatter'
             title: title of the plot
             x: list of x values
             y: list of y values
-            label: list of labels (only used for scatter with colors)
-            path: optional path to a CSV file for data
+            label: list of labels (only used for scatter)
+            path: optional path to CSV for labels
         """
         import matplotlib.pyplot as plt
         import pandas as pd
         import io
         import base64
 
-        plt.figure(figsize=(10, 6))
+        # Defaults
+        if x is None:
+            x = [1, 2, 3]
+        if y is None:
+            y = [1, 4, 9]
 
-        # If path is provided, try to load data from it
+        # Load labels from CSV if provided
         if path:
             try:
                 df = pd.read_csv(path)
-                x = df.iloc[:, 0].tolist()
-                y = df.iloc[:, 1].tolist()
-                if df.shape[1] > 2:
-                    label = df.iloc[:, 2].tolist()
+                label = df.iloc[:, 0].tolist()
             except Exception as e:
-                return f"Error: Could not read data from {path} - {e}"
-        
-        # Use default data if none is provided
-        if x is None: x = [1, 2, 3]
-        if y is None: y = [1, 4, 9]
+                label = None
+                print(f"Warning: Could not read labels from {path} - {e}")
+
+        plt.figure()
 
         if plot_type == "line":
             plt.plot(x, y)
         elif plot_type == "bar":
             plt.bar(x, y)
         elif plot_type == "scatter":
-            # The 'c' argument expects numerical data for coloring, not string labels for annotation
-            # We will ignore string labels for simplicity or you can implement annotation logic
-            try:
-                numeric_label = pd.to_numeric(label, errors='coerce')
-                plt.scatter(x, y, c=numeric_label)
-            except (ValueError, TypeError):
-                 plt.scatter(x, y)
+            if label is not None:
+                plt.scatter(x, y, c=label)
+            else:
+                plt.scatter(x, y)
         else:
-            return f"Error: Unsupported plot_type: {plot_type}"
+            raise ValueError(f"Unsupported plot_type: {plot_type}")
 
         plt.title(title)
-        plt.xlabel("X-axis")
-        plt.ylabel("Y-axis")
-        plt.grid(True)
-        
-        # --- FIX: These lines are essential ---
+        plt.xlabel("X")
+        plt.ylabel("Y")
+        plt.show()
+
         buf = io.BytesIO()
         plt.savefig(buf, format='png')
-        plt.close() # Close the plot to free memory
-        # --- END FIX ---
-
+        plt.close()
         buf.seek(0)
+
         img_base64 = base64.b64encode(buf.read()).decode('utf-8')
-        
-        # --- FIX: Return the base64 string with a prefix for easy parsing ---
-        return f"base64_image:{img_base64}"
-
-    # @tool
-    # @staticmethod
-    # def gen_plot(plot_type: str = "line", title: str = "Plot", x: list = [1, 2, 3], y: list = [1, 4, 9], label: list = [1, 2, 3], path: str | None=None) -> str:
-    #     """Generate a plot using Matplotlib. Returns base64-encoded PNG string.
-        
-    #     Args:
-    #         plot_type: 'line', 'bar', or 'scatter'
-    #         title: title of the plot
-    #         x: list of x values
-    #         y: list of y values
-    #     """
-    #     label = [1, 2, 3] or pd.read_csv(path)
-    #     plt.figure()
-    #     if plot_type == "line":
-    #         plt.plot(x, y)
-    #     elif plot_type == "bar":
-    #         plt.bar(x, y)
-    #     elif plot_type == "scatter":
-    #         plt.scatter(x, y, c=label)
-    #     else:
-    #         return f"Unsupported plot_type: {plot_type}"
-
-    #     plt.title(title)
-    #     plt.xlabel("X")
-    #     plt.ylabel("Y")
-
-    #     buf = io.BytesIO()
-    #     # plt.savefig(buf, format='png')
-    #     # plt.close()
-    #     buf.seek(0)
-    #     # print('image has been created')
-    #     img_bytes = buf.read()
-    #     img_base64 = base64.b64encode(img_bytes).decode('utf-8')
-    #     return 'image created'
-    # @tool
-    # @staticmethod
-    # def gen_plot(plot_type: str = "line", title: str = "Plot", x: list | None = None, y: list | None = None, label: list | None = None,path: str | None = None) -> str:
-    #     """
-    #     Generate a plot using Matplotlib. Returns base64-encoded PNG string.
-        
-    #     Args:
-    #         plot_type: 'line', 'bar', or 'scatter'
-    #         title: title of the plot
-    #         x: list of x values
-    #         y: list of y values
-    #         label: list of labels (only used for scatter)
-    #         path: optional path to CSV for labels
-    #     """
-    #     import matplotlib.pyplot as plt
-    #     import pandas as pd
-    #     import io
-    #     import base64
-
-    #     # Defaults
-    #     if x is None:
-    #         x = [1, 2, 3]
-    #     if y is None:
-    #         y = [1, 4, 9]
-
-    #     # Load labels from CSV if provided
-    #     if path:
-    #         try:
-    #             df = pd.read_csv(path)
-    #             label = df.iloc[:, 0].tolist()
-    #         except Exception as e:
-    #             label = None
-    #             print(f"Warning: Could not read labels from {path} - {e}")
-
-    #     plt.figure()
-
-    #     if plot_type == "line":
-    #         plt.plot(x, y)
-    #     elif plot_type == "bar":
-    #         plt.bar(x, y)
-    #     elif plot_type == "scatter":
-    #         if label is not None:
-    #             plt.scatter(x, y, c=label)
-    #         else:
-    #             plt.scatter(x, y)
-    #     else:
-    #         raise ValueError(f"Unsupported plot_type: {plot_type}")
-
-    #     plt.title(title)
-    #     plt.xlabel("X")
-    #     plt.ylabel("Y")
-
-    #     buf = io.BytesIO()
-    #     # plt.savefig(buf, format='png')
-    #     # plt.close()
-    #     buf.seek(0)
-
-    #     img_base64 = base64.b64encode(buf.read()).decode('utf-8')
-    #     return 'image created'
+        return 'image created'
