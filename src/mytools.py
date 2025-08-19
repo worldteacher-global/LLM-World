@@ -39,7 +39,7 @@ class MyTools:
     @tool
     @staticmethod
     def levene_test(path: str):
-        '''Calculate levene's test'''
+        '''Calculate levene's test for equality of variances'''
         data = pd.read_csv(path)
         data = np.array(data).T
         N = data.shape[0] * data.shape[1]
@@ -51,6 +51,7 @@ class MyTools:
         W = ((N - k) / (k - 1)) * (np.sum(Ni * (np.array(Zi) - Z) ** 2) / np.sum([np.sum((Zij[i] - Zi[i]) ** 2) for i in range(k)]))
         pval = 1 - f.cdf(W, k - 1, N - k)
         payload = {
+            "test":"levene's test",
             "W":float(W),
             "Pval":pval}
         return payload
@@ -72,9 +73,10 @@ class MyTools:
         MSE = SSE / (N - k)
         F_stat = MS / MSE
         pval = 1 - f.cdf(F_stat, k - 1, N - k)
-        payload = {"test":"one_way_anova",
-        "F":float(F_stat),
-        "P_val":float(pval)}
+        payload = {
+            "test":"one_way_anova",
+            "F":float(F_stat),
+            "P_val":float(pval)}
         return payload
 
     @tool
