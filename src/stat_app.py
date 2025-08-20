@@ -99,8 +99,7 @@ async def StatAgent(query: str):
         '- a statistics agent. Assign statistics related tasks to this agent\n'
         '- a visualization agent. Assign visualization related tasks to this agent\n'
         'Assign work to the agents. \n'
-        'Do not do any work yourself. \n'
-        'Summarise the work of each agent that produced a result. \n'
+        'Summarise the work of each agent that produced a result, and also render, plot and display the results of the visualization agent. \n'
         'If there is no response from one of your agents provide an explination as to why.'),    
         ('placeholder', '{messages}')  
     ])
