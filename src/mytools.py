@@ -31,19 +31,12 @@ from datetime import datetime
 import uuid
 # First, let's define the updated PlotResponse to include filepath
 class PlotResponse:
-    # def __init__(self, base64_string=None, filepath=None):
-    def __init__(self,filepath=None):
+    def __init__(self, base64_string=None,filepath=None):
+    # def __init__(self,filepath=None):
         self.filepath = filepath
-        # self.base64_string = base64_string
+        self.base64_string = base64_string
         
-class PlotRequest:
-    def __init__(self, x=None, y=None, label=None, path=None, plot_type="line", title="Plot"):
-        self.x = x
-        self.y = y
-        self.label = label
-        self.path = path
-        self.plot_type = plot_type
-        self.title = title
+
 
 from pydantic import BaseModel, Field, constr
 from typing import List, Optional, Literal
@@ -376,8 +369,8 @@ class MyTools:
         print(f"Plot saved to: {filepath}")
         
         # Return both filepath and base64
-        return PlotResponse(filepath=filepath,)
-        # return PlotResponse(filepath=filepath,base64_string=img_base64,)
+        # return PlotResponse(filepath=filepath,)
+        return PlotResponse(filepath=filepath,base64_string=img_base64)
 
 
     # @tool ## Works
@@ -491,7 +484,7 @@ class MyTools:
     @staticmethod
     def display_base64_image(
         file_path: str | None = None,
-        # base64_string: str | None = None,
+        base64_string: str | None = None,
         caption: str = "Image"
     ):
         """
@@ -516,12 +509,12 @@ class MyTools:
         if file_path and os.path.exists(file_path):
             img = Image.open(file_path)
 
-        # --- Load from base64 ---
-        # elif base64_string:
-        #     if base64_string.startswith("base64_image:"):
-        #         base64_string = base64_string[13:]
-        #     img_data = base64.b64decode(base64_string)
-        #     img = Image.open(io.BytesIO(img_data))
+        --- Load from base64 ---
+        elif base64_string:
+            if base64_string.startswith("base64_image:"):
+                base64_string = base64_string[13:]
+            img_data = base64.b64decode(base64_string)
+            img = Image.open(io.BytesIO(img_data))
 
         if img is None:
             return "No image found"
