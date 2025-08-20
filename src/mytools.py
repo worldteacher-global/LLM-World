@@ -135,7 +135,7 @@ class MyTools:
             import streamlit as st
             if st._is_running_with_streamlit:
                     st.image(img, caption=caption or "Image")
-                    return
+                    return "Displayed in Streamlit"
         except Exception:
             pass
 
@@ -143,6 +143,7 @@ class MyTools:
             # Jupyter/Colab
             from IPython.display import display
             display(img)
+            return "Displayed in Jupyter"
         else:
             # Fallback: plain Python -> open system viewer
             img.show()
@@ -151,63 +152,133 @@ class MyTools:
         return "temp_plot.png"
 
    
+    # @tool
+    # @staticmethod
+    # def gen_plot(plot_type: str = "line", title: str = "Plot", x: list | None = None, y: list | None = None, label: list | None = None,path: str | None = None) -> str:
+    #     """
+    #     Generate a plot using Matplotlib. Returns base64-encoded PNG string.
+        
+    #     Args:
+    #         plot_type: 'line', 'bar', or 'scatter'
+    #         title: title of the plot
+    #         x: list of x values
+    #         y: list of y values
+    #         label: list of labels (only used for scatter)
+    #         path: optional path to CSV for labels
+    #     """
+    #     import matplotlib.pyplot as plt
+    #     import pandas as pd
+    #     import io
+    #     import base64
+
+    #     # Defaults
+    #     if x is None:
+    #         x = [1, 2, 3]
+    #     if y is None:
+    #         y = [1, 4, 9]
+
+    #     # Load labels from CSV if provided
+    #     if path:
+    #         try:
+    #             df = pd.read_csv(path)
+    #             label = df.iloc[:, 0].tolist()
+    #         except Exception as e:
+    #             label = None
+    #             print(f"Warning: Could not read labels from {path} - {e}")
+
+    #     plt.figure()
+
+    #     if plot_type == "line":
+    #         plt.plot(x, y)
+    #     elif plot_type == "bar":
+    #         plt.bar(x, y)
+    #     elif plot_type == "scatter":
+    #         if label is not None:
+    #             plt.scatter(x, y, c=label)
+    #         else:
+    #             plt.scatter(x, y)
+    #     else:
+    #         raise ValueError(f"Unsupported plot_type: {plot_type}")
+
+    #     plt.title(title)
+    #     plt.xlabel("X")
+    #     plt.ylabel("Y")
+    #     plt.show()
+
+    #     buf = io.BytesIO()
+    #     plt.savefig(buf, format='png')
+    #     plt.close()
+    #     buf.seek(0)
+
+    #     img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+    #     payload = {'base64_string':img_base64}
+    #     return payload
+    
+    
+    from pydantic import BaseModel, Field, constr
+    from typing import List, Optional, Literal
+    import matplotlib.pyplot as plt
+    import pandas as pd
+    import io, base64
+
+
+    class PlotRequest(BaseModel):
+        plot_type: Literal["line", "bar", "scatter"] = Field(default="line")
+        title: str = Field(default="Plot")
+        x: Optional[List[float]] = None
+        y: Optional[List[float]] = None
+        label: Optional[List[float]] = None
+        path: Optional[str] = Field(
+            default=None,
+            description="Optional CSV path; if provided, first column used as labels"
+        )
+
+
+    class PlotResponse(BaseModel):
+        base64_string: constr(min_length=10) = Field(
+            ..., description="Base64-encoded PNG image string."
+        )
+
+
     @tool
     @staticmethod
-    def gen_plot(plot_type: str = "line", title: str = "Plot", x: list | None = None, y: list | None = None, label: list | None = None,path: str | None = None) -> str:
+    def gen_plot(request: PlotRequest) -> PlotResponse:
         """
         Generate a plot using Matplotlib. Returns base64-encoded PNG string.
-        
-        Args:
-            plot_type: 'line', 'bar', or 'scatter'
-            title: title of the plot
-            x: list of x values
-            y: list of y values
-            label: list of labels (only used for scatter)
-            path: optional path to CSV for labels
         """
-        import matplotlib.pyplot as plt
-        import pandas as pd
-        import io
-        import base64
-
-        # Defaults
-        if x is None:
-            x = [1, 2, 3]
-        if y is None:
-            y = [1, 4, 9]
+        x = request.x or [1, 2, 3]
+        y = request.y or [1, 4, 9]
+        label = request.label
 
         # Load labels from CSV if provided
-        if path:
+        if request.path:
             try:
-                df = pd.read_csv(path)
+                df = pd.read_csv(request.path)
                 label = df.iloc[:, 0].tolist()
             except Exception as e:
                 label = None
-                print(f"Warning: Could not read labels from {path} - {e}")
+                print(f"Warning: Could not read labels from {request.path} - {e}")
 
         plt.figure()
 
-        if plot_type == "line":
+        if request.plot_type == "line":
             plt.plot(x, y)
-        elif plot_type == "bar":
+        elif request.plot_type == "bar":
             plt.bar(x, y)
-        elif plot_type == "scatter":
-            if label is not None:
-                plt.scatter(x, y, c=label)
-            else:
-                plt.scatter(x, y)
+        elif request.plot_type == "scatter":
+            plt.scatter(x, y, c=label) if label is not None else plt.scatter(x, y)
         else:
-            raise ValueError(f"Unsupported plot_type: {plot_type}")
+            raise ValueError(f"Unsupported plot_type: {request.plot_type}")
 
-        plt.title(title)
+        plt.title(request.title)
         plt.xlabel("X")
         plt.ylabel("Y")
-        plt.show()
 
         buf = io.BytesIO()
-        plt.savefig(buf, format='png')
+        plt.savefig(buf, format="png")
         plt.close()
         buf.seek(0)
 
-        img_base64 = base64.b64encode(buf.read()).decode('utf-8')
-        return img_base64
+        img_base64 = base64.b64encode(buf.read()).decode("utf-8")
+
+        return PlotResponse(base64_string=img_base64)
