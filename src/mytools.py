@@ -481,20 +481,30 @@ class MyTools:
         result = {"status": "ok", "caption": caption}
         # Load from file path
         if file_path and os.path.exists(file_path):
-            with open(file_path, "rb") as f:
-                b64 = base64.b64encode(f.read()).decode("utf-8")
-            result["filepath"] = file_path
-            result["data_url"] = f"data:image/png;base64,{b64}"
-            return result
+            st.image(file_path, caption=caption)
+            return {"status": "ok", "caption": caption, "filepath": file_path}
+            # with open(file_path, "rb") as f:
+            #     b64 = base64.b64encode(f.read()).decode("utf-8")
+            # result["filepath"] = file_path
+            # result["data_url"] = f"data:image/png;base64,{b64}"
+            # return result
 
         # Load from base64
         if base64_string:
             if base64_string.startswith("base64_image:"):
                 base64_string = base64_string[13:]
-                    # Ensure data URL form
-            prefix = "data:image/png;base64,"
-            result["data_url"] = base64_string if base64_string.startswith(prefix) else prefix + base64_string
-            return result
+
+            if base64_string.startswith("data:image/png;base64,"):
+                base64_string = base64_string.split(",", 1)[1]
+
+            image_bytes = base64.b64decode(base64_string)
+            image = Image.open(io.BytesIO(image_bytes))
+            st.image(image, caption=caption)
+            return {"status": "ok", "caption": caption}
+            # # Ensure data URL form
+            # prefix = "data:image/png;base64,"
+            # result["data_url"] = base64_string if base64_string.startswith(prefix) else prefix + base64_string
+            # return result
         return {"status": "error", "message": "No image found"}
 
     # import re
