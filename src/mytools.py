@@ -14,7 +14,7 @@ import base64
 from IPython.display import display
 from PIL import Image
 import sys
-
+import streamlit as st
 
 
 
@@ -345,7 +345,7 @@ class MyTools:
         plt.title(request.title)
         plt.xlabel("X")
         plt.ylabel("Y")
-        
+        plt.show()
         # Create directory if it doesn't exist
         plot_dir = "generated_plots"
         os.makedirs(plot_dir, exist_ok=True)
