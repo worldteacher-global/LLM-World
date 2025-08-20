@@ -470,71 +470,95 @@ class MyTools:
     #     except:
     #         return f"Image saved to: {temp_path}"
 
-
-    import re
-    import os
-    import io
-    import base64
-    import sys
-    from PIL import Image
-
     @tool
     @staticmethod
-    def display_base64_image(
-        file_path: str | None = None,
+    def display_base64_image(file_path: str | None = None,
         base64_string: str | None = None,
-        caption: str = "Image"
-    ):
-        """
-        Displays an image either from:
-        - saved file path,
-        - base64 string, or
-        - markdown attachment syntax: ![caption](attachment://file.png)
+        caption: str = "Image"):
+            import os, base64
+            result = {"status": "ok", "caption": caption}
+            # Load from file path
+            if file_path and os.path.exists(file_path):
+                with open(file_path, "rb") as f:
+                    b64 = base64.b64encode(f.read()).decode("utf-8")
+                result["filepath"] = file_path
+                result["data_url"] = f"data:image/png;base64,{b64}"
+                return result
 
-        Works in Streamlit, Jupyter, or plain Python.
-        """
-        img = None
+            # Load from base64
+            if base64_string:
+                if base64_string.startswith("base64_image:"):
+                    base64_string = base64_string[13:]
+                        # Ensure data URL form
+                prefix = "data:image/png;base64,"
+                result["data_url"] = base64_string if base64_string.startswith(prefix) else prefix + base64_string
+                return result
+            return {"status": "error", "message": "No image found"}
 
-        # --- Parse Markdown attachment ---
-        if file_path and file_path.startswith("!["):
-            # Example: "![Bar Plot](attachment://plot.png)"
-            match = re.match(r"!\[(.*?)\]\(attachment://(.*?)\)", file_path)
-            if match:
-                caption = match.group(1) or caption
-                file_path = match.group(2)
+    # import re
+    # import os
+    # import io
+    # import base64
+    # import sys
+    # from PIL import Image
 
-        # --- Load from file path ---
-        if file_path and os.path.exists(file_path):
-            img = Image.open(file_path)
+    # @tool
+    # @staticmethod
+    # def display_base64_image(
+    #     file_path: str | None = None,
+    #     base64_string: str | None = None,
+    #     caption: str = "Image"
+    # ):
+    #     """
+    #     Displays an image either from:
+    #     - saved file path,
+    #     - base64 string, or
+    #     - markdown attachment syntax: ![caption](attachment://file.png)
 
-        #--- Load from base64 ---
-        elif base64_string:
-            if base64_string.startswith("base64_image:"):
-                base64_string = base64_string[13:]
-            img_data = base64.b64decode(base64_string)
-            img = Image.open(io.BytesIO(img_data))
+    #     Works in Streamlit, Jupyter, or plain Python.
+    #     """
+    #     img = None
 
-        if img is None:
-            return "No image found"
+    #     # --- Parse Markdown attachment ---
+    #     if file_path and file_path.startswith("!["):
+    #         # Example: "![Bar Plot](attachment://plot.png)"
+    #         match = re.match(r"!\[(.*?)\]\(attachment://(.*?)\)", file_path)
+    #         if match:
+    #             caption = match.group(1) or caption
+    #             file_path = match.group(2)
 
-        # --- Try Streamlit ---
-        try:
-            import streamlit as st
-            from streamlit.runtime.scriptrunner import get_script_run_ctx
-            if get_script_run_ctx() is not None:
-                st.image(img, caption=caption or "Image")
-                return "Displayed in Streamlit"
-        except ImportError:
-            pass
-        except Exception as e:
-            print(f"Streamlit display error: {e}")
+    #     # --- Load from file path ---
+    #     if file_path and os.path.exists(file_path):
+    #         img = Image.open(file_path)
 
-        # --- Jupyter Notebook ---
-        if "ipykernel" in sys.modules:
-            from IPython.display import display
-            display(img)
-            return "Displayed in Jupyter"
+    #     #--- Load from base64 ---
+    #     elif base64_string:
+    #         if base64_string.startswith("base64_image:"):
+    #             base64_string = base64_string[13:]
+    #         img_data = base64.b64decode(base64_string)
+    #         img = Image.open(io.BytesIO(img_data))
 
-        # --- Fallback: System viewer ---
-        img.show()
-        return file_path or "Image shown"
+    #     if img is None:
+    #         return "No image found"
+
+    #     # --- Try Streamlit ---
+    #     try:
+    #         import streamlit as st
+    #         from streamlit.runtime.scriptrunner import get_script_run_ctx
+    #         if get_script_run_ctx() is not None:
+    #             st.image(img, caption=caption or "Image")
+    #             return "Displayed in Streamlit"
+    #     except ImportError:
+    #         pass
+    #     except Exception as e:
+    #         print(f"Streamlit display error: {e}")
+
+    #     # --- Jupyter Notebook ---
+    #     if "ipykernel" in sys.modules:
+    #         from IPython.display import display
+    #         display(img)
+    #         return "Displayed in Jupyter"
+
+    #     # --- Fallback: System viewer ---
+    #     img.show()
+    #     return file_path or "Image shown"
