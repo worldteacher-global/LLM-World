@@ -147,8 +147,8 @@ class MyTools:
             # Fallback: plain Python -> open system viewer
             img.show()
             # Save to a temporary file to display
-        # img.save("temp_plot.png")
-        # return "temp_plot.png"
+        img.save("temp_plot.png")
+        return "temp_plot.png"
 
    
     @tool
