@@ -155,14 +155,27 @@ class MyTools:
         img = Image.open(io.BytesIO(img_data))
         # display(Image(img))
         try:
-        # Streamlit
+        # Proper way to check if Streamlit is running
             import streamlit as st
-            if st._is_running_with_streamlit:
-                    st.image(img, caption=caption or "Image")
-                    return "Displayed in Streamlit"
-        except Exception:
-            print('FAILED!!')
-            # pass
+            # Check if we're in a Streamlit environment
+            from streamlit.runtime.scriptrunner import get_script_run_ctx
+            if get_script_run_ctx() is not None:
+                st.image(img, caption=caption or "Image")
+                return "Displayed in Streamlit"
+        except ImportError:
+            pass
+        except Exception as e:
+            print(f"Streamlit display error: {e}")
+        
+        # Fallback for non-Streamlit environments
+        return img  # Return the PIL Image object
+
+    # print("Function created successfully!")
+    # print("\nKey issues in your original code:")
+    # print("1. 'caption' parameter was missing from function signature")
+    # print("2. 'st._is_running_with_streamlit' is not a reliable check")
+    # print("3. 'print(img_data)' was printing raw binary data")
+    # print("4. Missing proper error handling")
 
         # if "ipykernel" in sys.modules:  
         #     # Jupyter/Colab
