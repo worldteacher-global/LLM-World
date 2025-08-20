@@ -140,9 +140,9 @@ class MyTools:
 
     @tool
     @staticmethod
-    def display_base64_image(base64_string):
+    def display_base64_image(base64_string, caption="Image"):
         """
-        Displays a base64-encoded image string
+        Displays a base64-encoded image string as an plot (a pil image object)
         """
         # Remove the prefix if it exists
         if base64_string.startswith("base64_image:"):
@@ -150,7 +150,7 @@ class MyTools:
         
         # Decode the base64 string
         img_data = base64.b64decode(base64_string)
-        print(img_data)
+        # print(img_data)
         # Create an image from the decoded data
         img = Image.open(io.BytesIO(img_data))
         # display(Image(img))
@@ -170,12 +170,6 @@ class MyTools:
         # Fallback for non-Streamlit environments
         return img  # Return the PIL Image object
 
-    # print("Function created successfully!")
-    # print("\nKey issues in your original code:")
-    # print("1. 'caption' parameter was missing from function signature")
-    # print("2. 'st._is_running_with_streamlit' is not a reliable check")
-    # print("3. 'print(img_data)' was printing raw binary data")
-    # print("4. Missing proper error handling")
 
         # if "ipykernel" in sys.modules:  
         #     # Jupyter/Colab
