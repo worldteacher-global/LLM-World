@@ -509,7 +509,7 @@ class MyTools:
         if file_path and os.path.exists(file_path):
             img = Image.open(file_path)
 
-        --- Load from base64 ---
+        #--- Load from base64 ---
         elif base64_string:
             if base64_string.startswith("base64_image:"):
                 base64_string = base64_string[13:]
