@@ -15,6 +15,35 @@ from IPython.display import display
 from PIL import Image
 import sys
 
+
+
+
+
+
+import os
+import io
+import sys
+import base64
+import pandas as pd
+import matplotlib.pyplot as plt
+from PIL import Image
+from datetime import datetime
+import uuid
+# First, let's define the updated PlotResponse to include filepath
+class PlotResponse:
+    def __init__(self, base64_string=None, filepath=None):
+        self.base64_string = base64_string
+        self.filepath = filepath
+
+class PlotRequest:
+    def __init__(self, x=None, y=None, label=None, path=None, plot_type="line", title="Plot"):
+        self.x = x
+        self.y = y
+        self.label = label
+        self.path = path
+        self.plot_type = plot_type
+        self.title = title
+
 from pydantic import BaseModel, Field, constr
 from typing import List, Optional, Literal
 import matplotlib.pyplot as plt
@@ -138,49 +167,49 @@ class MyTools:
                 return {'result':f'Column {col} is not normally distributed, and not recommended to include in ANOVA analysis'}
         return {'result':'Data is normal'}
 
-    @tool
-    @staticmethod
-    def display_base64_image(base64_string, caption="Image"):
-        """
-        Displays a base64-encoded image string as an plot (a pil image object)
-        """
-        # Remove the prefix if it exists
-        if base64_string.startswith("base64_image:"):
-            base64_string = base64_string[13:]  # Remove "base64_image:" prefix
+    # @tool
+    # @staticmethod
+    # def display_base64_image(base64_string, caption="Image"):
+    #     """
+    #     Displays a base64-encoded image string as an plot (a pil image object)
+    #     """
+    #     # Remove the prefix if it exists
+    #     if base64_string.startswith("base64_image:"):
+    #         base64_string = base64_string[13:]  # Remove "base64_image:" prefix
         
-        # Decode the base64 string
-        img_data = base64.b64decode(base64_string)
-        # print(img_data)
-        # Create an image from the decoded data
-        img = Image.open(io.BytesIO(img_data))
-        # display(Image(img))
-        try:
-        # Proper way to check if Streamlit is running
-            import streamlit as st
-            # Check if we're in a Streamlit environment
-            from streamlit.runtime.scriptrunner import get_script_run_ctx
-            if get_script_run_ctx() is not None:
-                st.image(img, caption=caption or "Image")
-                return "Displayed in Streamlit"
-        except ImportError:
-            pass
-        except Exception as e:
-            print(f"Streamlit display error: {e}")
+    #     # Decode the base64 string
+    #     img_data = base64.b64decode(base64_string)
+    #     # print(img_data)
+    #     # Create an image from the decoded data
+    #     img = Image.open(io.BytesIO(img_data))
+    #     # display(Image(img))
+    #     try:
+    #     # Proper way to check if Streamlit is running
+    #         import streamlit as st
+    #         # Check if we're in a Streamlit environment
+    #         from streamlit.runtime.scriptrunner import get_script_run_ctx
+    #         if get_script_run_ctx() is not None:
+    #             st.image(img, caption=caption or "Image")
+    #             return "Displayed in Streamlit"
+    #     except ImportError:
+    #         pass
+    #     except Exception as e:
+    #         print(f"Streamlit display error: {e}")
         
-        # # Fallback for non-Streamlit environments
-        # return img  # Return the PIL Image object
+    #     # # Fallback for non-Streamlit environments
+    #     # return img  # Return the PIL Image object
 
-        if "ipykernel" in sys.modules:  
-            # Jupyter/Colab
-            from IPython.display import display
-            display(img)
-            return "Displayed in Jupyter"
-        else:
-            # Fallback: plain Python -> open system viewer
-            img.show()
-            # Save to a temporary file to display
-        img.save("temp_plot.png")
-        return "temp_plot.png"
+    #     if "ipykernel" in sys.modules:  
+    #         # Jupyter/Colab
+    #         from IPython.display import display
+    #         display(img)
+    #         return "Displayed in Jupyter"
+    #     else:
+    #         # Fallback: plain Python -> open system viewer
+    #         img.show()
+    #         # Save to a temporary file to display
+    #     img.save("temp_plot.png")
+    #     return "temp_plot.png"
 
    
     # @tool
@@ -248,16 +277,60 @@ class MyTools:
     
     
 
+    # @tool
+    # @staticmethod
+    # def gen_plot(request: PlotRequest) -> PlotResponse:
+    #     """
+    #     Generate a plot using Matplotlib. Returns base64-encoded PNG string.
+    #     """
+    #     x = request.x or [1, 2, 3]
+    #     y = request.y or [1, 4, 9]
+    #     label = request.label
+
+    #     # Load labels from CSV if provided
+    #     if request.path:
+    #         try:
+    #             df = pd.read_csv(request.path)
+    #             label = df.iloc[:, 0].tolist()
+    #         except Exception as e:
+    #             label = None
+    #             print(f"Warning: Could not read labels from {request.path} - {e}")
+
+    #     plt.figure()
+
+    #     if request.plot_type == "line":
+    #         plt.plot(x, y)
+    #     elif request.plot_type == "bar":
+    #         plt.bar(x, y)
+    #     elif request.plot_type == "scatter":
+    #         plt.scatter(x, y, c=label) if label is not None else plt.scatter(x, y)
+    #     else:
+    #         raise ValueError(f"Unsupported plot_type: {request.plot_type}")
+
+    #     plt.title(request.title)
+    #     plt.xlabel("X")
+    #     plt.ylabel("Y")
+
+    #     buf = io.BytesIO()
+    #     plt.savefig(buf, format="png")
+    #     plt.close()
+    #     buf.seek(0)
+
+    #     img_base64 = base64.b64encode(buf.read()).decode("utf-8")
+
+    #     return PlotResponse(base64_string=img_base64)
+
+
     @tool
     @staticmethod
     def gen_plot(request: PlotRequest) -> PlotResponse:
         """
-        Generate a plot using Matplotlib. Returns base64-encoded PNG string.
+        Generate a plot using Matplotlib. Saves the plot to a directory and returns the filepath.
         """
         x = request.x or [1, 2, 3]
         y = request.y or [1, 4, 9]
         label = request.label
-
+        
         # Load labels from CSV if provided
         if request.path:
             try:
@@ -266,9 +339,8 @@ class MyTools:
             except Exception as e:
                 label = None
                 print(f"Warning: Could not read labels from {request.path} - {e}")
-
+        
         plt.figure()
-
         if request.plot_type == "line":
             plt.plot(x, y)
         elif request.plot_type == "bar":
@@ -277,16 +349,159 @@ class MyTools:
             plt.scatter(x, y, c=label) if label is not None else plt.scatter(x, y)
         else:
             raise ValueError(f"Unsupported plot_type: {request.plot_type}")
-
+        
         plt.title(request.title)
         plt.xlabel("X")
         plt.ylabel("Y")
-
-        buf = io.BytesIO()
-        plt.savefig(buf, format="png")
+        
+        # Create directory if it doesn't exist
+        plot_dir = "generated_plots"
+        os.makedirs(plot_dir, exist_ok=True)
+        
+        # Generate unique filename with timestamp
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        unique_id = str(uuid.uuid4())[:8]
+        filename = f"plot_{timestamp}_{unique_id}.png"
+        filepath = os.path.join(plot_dir, filename)
+        
+        # Save the plot to file
+        plt.savefig(filepath, format="png", dpi=100, bbox_inches='tight')
         plt.close()
-        buf.seek(0)
+        
+        # Also create base64 for backward compatibility
+        with open(filepath, "rb") as img_file:
+            img_base64 = base64.b64encode(img_file.read()).decode("utf-8")
+        
+        print(f"Plot saved to: {filepath}")
+        
+        # Return both filepath and base64
+        return PlotResponse(base64_string=img_base64, filepath=filepath)
 
-        img_base64 = base64.b64encode(buf.read()).decode("utf-8")
 
-        return PlotResponse(base64_string=img_base64)
+    @tool
+    @staticmethod
+    def display_base64_image(input_source, caption="Image"):
+        """
+        Displays an image from either a file path, base64-encoded string, or reads from directory.
+        
+        Args:
+            input_source: Can be a filepath, base64 string, or 'latest' to get the most recent plot
+            caption: Caption for the image
+        """
+        img = None
+        source_file = None
+        
+        # Check if we should get the latest file from directory
+        if input_source == "latest" or input_source is None:
+            plot_dir = "generated_plots"
+            if os.path.exists(plot_dir):
+                files = [f for f in os.listdir(plot_dir) if f.endswith('.png')]
+                if files:
+                    # Get the most recent file
+                    files_with_path = [os.path.join(plot_dir, f) for f in files]
+                    source_file = max(files_with_path, key=os.path.getctime)
+                    img = Image.open(source_file)
+                    print(f"Loading latest plot: {source_file}")
+        
+        # Check if input is a file path
+        elif isinstance(input_source, str) and (os.path.exists(input_source) or 
+                                            os.path.exists(os.path.join("generated_plots", input_source))):
+            # Try direct path first
+            if os.path.exists(input_source):
+                source_file = input_source
+            else:
+                # Try in generated_plots directory
+                source_file = os.path.join("generated_plots", input_source)
+            
+            img = Image.open(source_file)
+            print(f"Loading plot from: {source_file}")
+        
+        # Handle base64 string
+        elif isinstance(input_source, str):
+            base64_string = input_source
+            
+            # Remove the prefix if it exists
+            if base64_string.startswith("base64_image:"):
+                base64_string = base64_string[13:]
+            
+            try:
+                # Decode the base64 string
+                img_data = base64.b64decode(base64_string)
+                img = Image.open(io.BytesIO(img_data))
+                print("Loaded image from base64 string")
+            except Exception as e:
+                print(f"Error decoding base64: {e}")
+                return f"Error: Could not decode base64 string - {e}"
+        
+        if img is None:
+            return "Error: Could not load image from provided source"
+        
+        # Try to display in different environments
+        try:
+            # Check if Streamlit is available and running
+            import streamlit as st
+            from streamlit.runtime.scriptrunner import get_script_run_ctx
+            
+            if get_script_run_ctx() is not None:
+                # We're in a Streamlit environment
+                if source_file:
+                    # Display from file (more efficient for Streamlit)
+                    st.image(source_file, caption=caption)
+                else:
+                    # Display from PIL Image
+                    st.image(img, caption=caption)
+                return f"Displayed in Streamlit: {caption}"
+        except ImportError:
+            pass
+        except Exception as e:
+            print(f"Streamlit display error: {e}")
+        
+        # Check for Jupyter/IPython environment
+        if "ipykernel" in sys.modules:
+            try:
+                from IPython.display import display
+                display(img)
+                return f"Displayed in Jupyter: {caption}"
+            except Exception as e:
+                print(f"Jupyter display error: {e}")
+        
+        # Fallback: save to temp file and return path
+        temp_path = "temp_plot.png"
+        img.save(temp_path)
+        print(f"Image saved to: {temp_path}")
+        
+        # Try to open with system viewer
+        try:
+            img.show()
+            return f"Opened in system viewer and saved to: {temp_path}"
+        except:
+            return f"Image saved to: {temp_path}"
+
+
+# # Test the functions
+# print("Testing the updated functions...")
+
+# # Create a sample plot
+# request = PlotRequest(
+#     x=[1, 2, 3, 4, 5],
+#     y=[2, 4, 6, 8, 10],
+#     plot_type="line",
+#     title="Test Plot"
+# )
+
+# # Generate and save the plot
+# result = gen_plot(request)
+# print(f"Generated plot filepath: {result.filepath}")
+
+# # Display the plot using the filepath
+# display_result = display_base64_image(result.filepath)
+# print(f"Display result: {display_result}")
+
+# # Also test with "latest" option
+# display_latest = display_base64_image("latest")
+# print(f"Display latest result: {display_latest}")
+
+# # List all files in generated_plots directory
+# if os.path.exists("generated_plots"):
+#     files = os.listdir("generated_plots")
+#     print(f"\nFiles in generated_plots directory: {files}")
