@@ -15,7 +15,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # if runninng jupyter notebook
 EXPOSE 8888
-
+# Gradio
+EXPOSE 7860
 # Run an interactive shell by default
 # CMD ["/bin/bash"] 
 
