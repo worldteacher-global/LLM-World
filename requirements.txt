@@ -1,4 +1,5 @@
 ipykernel
+ipython
 # GenAI
 python-dotenv
 requests
