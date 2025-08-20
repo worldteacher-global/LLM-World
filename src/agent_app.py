@@ -90,7 +90,7 @@ async def _multiAgent(user_input: str) -> Tuple[str, str | None]:
     memory = MemorySaver()
     config = {'configurable': {'thread_id': 'streamlit_thread_v10_descriptive'}} 
     
-    supervisor_tools = [assign_to_visualization_agent, assign_to_statistics_agent, final_answer]
+    supervisor_tools = [assign_to_visualization_agent, assign_to_statistics_agent, mytools.display_base64_image ,final_answer]
     supervisor_agent = create_react_agent(model=helper.aws_llm('us.'+helper.get_aws_llms()['Claude Sonnet 4']), tools=supervisor_tools, prompt=prompt_sup, checkpointer=memory, name='supervisor')
     
     graph = StateGraph(MessagesState)
