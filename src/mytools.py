@@ -8,35 +8,20 @@ import ast
 import requests
 import io
 import base64
-from pydantic import BaseModel
-from typing import List
+
 import base64
 from IPython.display import display
 from PIL import Image
 import sys
 import streamlit as st
 
-
-
-
-
 import os
-import io
-import sys
-import base64
-import pandas as pd
-import matplotlib.pyplot as plt
-from PIL import Image
 from datetime import datetime
 import uuid
-        
-
 
 from pydantic import BaseModel, Field, constr
 from typing import List, Optional, Literal
-import matplotlib.pyplot as plt
-import pandas as pd
-import io, base64
+
 class PlotRequest(BaseModel):
     plot_type: Literal["line", "bar", "scatter"] = Field(default="line")
     title: str = Field(default="Plot")
@@ -48,8 +33,7 @@ class PlotRequest(BaseModel):
         description="Optional CSV path; if provided, first column used as labels"
     )
 
-from pydantic import BaseModel, Field, constr
-from typing import Optional
+
 class PlotResponse(BaseModel):
     base64_string: constr(min_length=10) = Field(
         ..., description="Base64-encoded PNG image string."
@@ -368,7 +352,7 @@ class MyTools:
         
         # Return both filepath and base64
         # return PlotResponse(filepath=filepath,)
-        return PlotResponse(filepath=filepath,base64_string=img_base64)
+        return PlotResponse(base64_string=img_base64, filepath=filepath)
 
 
     # @tool ## Works
@@ -477,7 +461,6 @@ class MyTools:
         caption: str = "Image"):
         """Displays an image from either a file path, base64-encoded string, or reads from directory."""
 
-        import os, base64
         result = {"status": "ok", "caption": caption}
         # Load from file path
         if file_path and os.path.exists(file_path):
