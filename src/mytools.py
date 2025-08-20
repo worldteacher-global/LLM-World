@@ -29,12 +29,6 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from datetime import datetime
 import uuid
-# First, let's define the updated PlotResponse to include filepath
-class PlotResponse:
-    def __init__(self, base64_string=None,filepath=None):
-    # def __init__(self,filepath=None):
-        self.filepath = filepath
-        self.base64_string = base64_string
         
 
 
@@ -54,11 +48,15 @@ class PlotRequest(BaseModel):
         description="Optional CSV path; if provided, first column used as labels"
     )
 
-
-# class PlotResponse(BaseModel):
-#     base64_string: constr(min_length=10) = Field(
-#         ..., description="Base64-encoded PNG image string."
-#     )
+from pydantic import BaseModel, Field, constr
+from typing import Optional
+class PlotResponse(BaseModel):
+    base64_string: constr(min_length=10) = Field(
+        ..., description="Base64-encoded PNG image string."
+    )
+    file_path: Optional[str] = Field(
+        None, description="Optional file path where the PNG image is saved."
+    )
 
 
 
