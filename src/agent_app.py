@@ -159,16 +159,16 @@ if __name__=='__main__':
 
     ## logic for file uploads     
     
-    file_uploaded = st.file_uploader("Upload a file.", type="csv")
+    # file_uploaded = st.file_uploader("Upload a file.", type="csv")
 
-    UPLOAD_FOLDER = "uploaded_file"
-    if not os.path.exists(UPLOAD_FOLDER):
-        os.makedirs(UPLOAD_FOLDER)
+    # UPLOAD_FOLDER = "uploaded_file"
+    # if not os.path.exists(UPLOAD_FOLDER):
+    #     os.makedirs(UPLOAD_FOLDER)
 
-    if file_uploaded:
-        file_path = os.path.join(UPLOAD_FOLDER,file_uploaded.name)
-        with open(file_path, "wb") as f:
-            f.write(file_uploaded.getbuffer())
+    # if file_uploaded:
+    #     file_path = os.path.join(UPLOAD_FOLDER,file_uploaded.name)
+    #     with open(file_path, "wb") as f:
+    #         f.write(file_uploaded.getbuffer())
             
         # st.success(f"File was saved at: {file_path}")
 
