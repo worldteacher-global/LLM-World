@@ -475,25 +475,27 @@ class MyTools:
     def display_base64_image(file_path: str | None = None,
         base64_string: str | None = None,
         caption: str = "Image"):
-            import os, base64
-            result = {"status": "ok", "caption": caption}
-            # Load from file path
-            if file_path and os.path.exists(file_path):
-                with open(file_path, "rb") as f:
-                    b64 = base64.b64encode(f.read()).decode("utf-8")
-                result["filepath"] = file_path
-                result["data_url"] = f"data:image/png;base64,{b64}"
-                return result
+        """Displays an image from either a file path, base64-encoded string, or reads from directory."""
 
-            # Load from base64
-            if base64_string:
-                if base64_string.startswith("base64_image:"):
-                    base64_string = base64_string[13:]
-                        # Ensure data URL form
-                prefix = "data:image/png;base64,"
-                result["data_url"] = base64_string if base64_string.startswith(prefix) else prefix + base64_string
-                return result
-            return {"status": "error", "message": "No image found"}
+        import os, base64
+        result = {"status": "ok", "caption": caption}
+        # Load from file path
+        if file_path and os.path.exists(file_path):
+            with open(file_path, "rb") as f:
+                b64 = base64.b64encode(f.read()).decode("utf-8")
+            result["filepath"] = file_path
+            result["data_url"] = f"data:image/png;base64,{b64}"
+            return result
+
+        # Load from base64
+        if base64_string:
+            if base64_string.startswith("base64_image:"):
+                base64_string = base64_string[13:]
+                    # Ensure data URL form
+            prefix = "data:image/png;base64,"
+            result["data_url"] = base64_string if base64_string.startswith(prefix) else prefix + base64_string
+            return result
+        return {"status": "error", "message": "No image found"}
 
     # import re
     # import os
