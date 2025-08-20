@@ -15,6 +15,30 @@ from IPython.display import display
 from PIL import Image
 import sys
 
+from pydantic import BaseModel, Field, constr
+from typing import List, Optional, Literal
+import matplotlib.pyplot as plt
+import pandas as pd
+import io, base64
+class PlotRequest(BaseModel):
+    plot_type: Literal["line", "bar", "scatter"] = Field(default="line")
+    title: str = Field(default="Plot")
+    x: Optional[List[float]] = None
+    y: Optional[List[float]] = None
+    label: Optional[List[float]] = None
+    path: Optional[str] = Field(
+        default=None,
+        description="Optional CSV path; if provided, first column used as labels"
+    )
+
+
+class PlotResponse(BaseModel):
+    base64_string: constr(min_length=10) = Field(
+        ..., description="Base64-encoded PNG image string."
+    )
+
+
+
 class DataFramePayload(BaseModel):
     columns: List[str]
     data: List[List[float]]
@@ -215,30 +239,7 @@ class MyTools:
     #     return payload
     
     
-    from pydantic import BaseModel, Field, constr
-    from typing import List, Optional, Literal
-    import matplotlib.pyplot as plt
-    import pandas as pd
-    import io, base64
-
-
-    class PlotRequest(BaseModel):
-        plot_type: Literal["line", "bar", "scatter"] = Field(default="line")
-        title: str = Field(default="Plot")
-        x: Optional[List[float]] = None
-        y: Optional[List[float]] = None
-        label: Optional[List[float]] = None
-        path: Optional[str] = Field(
-            default=None,
-            description="Optional CSV path; if provided, first column used as labels"
-        )
-
-
-    class PlotResponse(BaseModel):
-        base64_string: constr(min_length=10) = Field(
-            ..., description="Base64-encoded PNG image string."
-        )
-
+    
 
     @tool
     @staticmethod
