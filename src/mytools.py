@@ -167,21 +167,20 @@ class MyTools:
         except Exception as e:
             print(f"Streamlit display error: {e}")
         
-        # Fallback for non-Streamlit environments
-        return img  # Return the PIL Image object
+        # # Fallback for non-Streamlit environments
+        # return img  # Return the PIL Image object
 
-
-        # if "ipykernel" in sys.modules:  
-        #     # Jupyter/Colab
-        #     from IPython.display import display
-        #     display(img)
-        #     return "Displayed in Jupyter"
-        # else:
-        #     # Fallback: plain Python -> open system viewer
-        #     img.show()
-        #     # Save to a temporary file to display
-        # img.save("temp_plot.png")
-        # return "temp_plot.png"
+        if "ipykernel" in sys.modules:  
+            # Jupyter/Colab
+            from IPython.display import display
+            display(img)
+            return "Displayed in Jupyter"
+        else:
+            # Fallback: plain Python -> open system viewer
+            img.show()
+            # Save to a temporary file to display
+        img.save("temp_plot.png")
+        return "temp_plot.png"
 
    
     # @tool
