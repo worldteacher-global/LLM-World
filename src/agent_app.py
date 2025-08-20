@@ -117,7 +117,7 @@ async def _multiAgent(user_input: str) -> Tuple[str, str | None]:
                     else:
                         final_text_response = content
 
-    return final_text_response, base64_image_data
+    return final_text_response.strip(), base64_image_data
 
 def multiAgent(user_query: str) -> Tuple[str, str | None]:
     return asyncio.run(_multiAgent(user_input=user_query))
