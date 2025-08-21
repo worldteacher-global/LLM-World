@@ -157,7 +157,7 @@ if __name__=='__main__':
     if user_input:
         st.write("user_input object:", user_input)
         st.write("user_input.file:", user_input.files[0].name)
-        # st.write("user_input.text:", getattr(user_input, "text", None))
+        st.write("user_input.text:", user_input.text)
         # user_text = user_input.text if hasattr(user_input, "text") else str(user_input)
 
         # file_path = None
