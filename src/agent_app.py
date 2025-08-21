@@ -145,7 +145,7 @@ if __name__=='__main__':
     
 
             
-    if user_input := st.chat_input("Hello! Please submit a question or request:"):
+    if user_input := st.chat_input("Hello! Please submit a question or request:", accept_file=True, file_type=[".csv"]):
         st.session_state.messages.append({"role": "user", "content": user_input})
         
         with st.chat_message("user"): st.markdown(user_input)
