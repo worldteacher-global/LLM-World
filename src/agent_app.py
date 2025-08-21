@@ -140,8 +140,8 @@ def multiAgent(user_query: str, file_path: str | None = None) -> Tuple[str, str 
 if __name__=='__main__':
     st.set_page_config(layout="wide")
 
-    # st.title(":telephone_receiver: StatLine Agent :test_tube:")
-    st.title(":telephone_receiver: StatLine Agent :male-scientist:")
+    st.title(":test_tube: StatLine Agent :telephone_receiver:")
+    
     if 'messages' not in st.session_state: st.session_state.messages = []
 
     for message in st.session_state.messages:
