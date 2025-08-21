@@ -22,6 +22,8 @@ import uuid
 from pydantic import BaseModel, Field, constr
 from typing import List, Optional, Literal
 
+import json
+
 class PlotRequest(BaseModel):
     plot_type: Literal["line", "bar", "scatter"] = Field(default="line")
     title: str = Field(default="Plot")
@@ -35,12 +37,15 @@ class PlotRequest(BaseModel):
 
 
 class PlotResponse(BaseModel):
-    base64_string: constr(min_length=10) = Field(
-        ..., description="Base64-encoded PNG image string."
-    )
-    file_path: Optional[str] = Field(
-        None, description="Optional file path where the PNG image is saved."
-    )
+    base64_string: str
+
+# class PlotResponse(BaseModel):
+#     base64_string: constr(min_length=10) = Field(
+#         ..., description="Base64-encoded PNG image string."
+#     )
+#     file_path: Optional[str] = Field(
+#         None, description="Optional file path where the PNG image is saved."
+#     )
 
 
 
@@ -198,10 +203,12 @@ class MyTools:
             img_base64 = base64.b64encode(img_file.read()).decode("utf-8")
         
         print(f"Plot saved to: {filepath}")
-        
-        # Return both filepath and base64
   
-        return PlotResponse(base64_string=img_base64, filepath=filepath)
+        # return PlotResponse(base64_string=img_base64)
+        return {"output":img_base64} ## Worked!!
+        # return json.dumps({"return":img_base64},indent=3)
+  
+        # return PlotResponse(base64_string=img_base64, filepath=filepath)
     
     @tool
     @staticmethod
@@ -224,7 +231,8 @@ class MyTools:
             if base64_string.startswith("data:image/png;base64,"):
                 base64_string = base64_string.split(",", 1)[1]
 
-            image_bytes = base64.b64decode(base64_string)
+            # image_bytes = base64.b64decode(base64_string)
+            image_bytes = base64.b64decode(base64_string.encode("utf-8"))
             # image = Image.open(io.BytesIO(image_bytes))
             st.image(image_bytes, caption=caption)
             return {"status": "ok", "caption": caption}
