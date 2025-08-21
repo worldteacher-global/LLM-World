@@ -132,8 +132,8 @@ async def _multiAgent(user_input: str , file_path: str | None = None) -> Tuple[s
 
     return final_text_response.strip(), base64_image_data
 
-def multiAgent(user_query: str) -> Tuple[str, str | None]:
-    return asyncio.run(_multiAgent(user_input=user_query))
+def multiAgent(user_query: str, file_path: str | None = None) -> Tuple[str, str | None]:
+    return asyncio.run(_multiAgent(user_input=user_query, file_path=file_path))
 
 
 
