@@ -1,7 +1,5 @@
 # train.py
 
-# -----------------------------
-# MUST set these BEFORE any imports from transformers/trl
 import os
 os.environ["TRANSFORMERS_NO_TRACKIO"] = "1"  # disables internal tracking
 os.environ["TRL_GRADIO_ENABLED"] = "0"      # disables Gradio UI
