@@ -167,24 +167,24 @@ if __name__=='__main__':
                 f.write(user_input.file.read())
             st.success(f"File saved to {file_path}")
 
-        st.session_state.messages.append({"role": "user", "content": user_text})       
+            st.session_state.messages.append({"role": "user", "content": user_text})       
 
-        with st.chat_message("user"): st.markdown(user_text)
-        
-        with st.spinner("Agents are collaborating on your request..."):
-            text_result, image_to_display = multiAgent(user_text, file_path=file_path)
-        
-        with st.chat_message("assistant"):
-            if text_result:
-                st.markdown(text_result)
-                msg_to_store = {"role": "assistant", "content": text_result}
-            else:
-                st.warning("The agent process completed, but no text output was returned.")
-                msg_to_store = {"role": "assistant", "content": "No text output was generated."}
-            if image_to_display:
-                st.image(image_to_display, caption="Generated Visualization")
-                msg_to_store["image"] = image_to_display
-            st.session_state.messages.append(msg_to_store)
+            with st.chat_message("user"): st.markdown(user_text)
+            
+            with st.spinner("Agents are collaborating on your request..."):
+                text_result, image_to_display = multiAgent(user_text, file_path=file_path)
+            
+            with st.chat_message("assistant"):
+                if text_result:
+                    st.markdown(text_result)
+                    msg_to_store = {"role": "assistant", "content": text_result}
+                else:
+                    st.warning("The agent process completed, but no text output was returned.")
+                    msg_to_store = {"role": "assistant", "content": "No text output was generated."}
+                if image_to_display:
+                    st.image(image_to_display, caption="Generated Visualization")
+                    msg_to_store["image"] = image_to_display
+                st.session_state.messages.append(msg_to_store)
 
     
 
