@@ -155,20 +155,20 @@ if __name__=='__main__':
     # if user_input := st.chat_input("Hello! Please submit a question or request:", accept_file=True, file_type=[".csv"]):
     user_input = st.chat_input("Hello! Please submit a question or request:", accept_file=True, file_type=[".csv"])        
     if user_input:
-        # st.write("user_input object:", user_input)
-        # st.write("user_input.file:", getattr(user_input, "file", None))
-        # st.write("user_input.text:", getattr(user_input, "text", None))
-        user_text = user_input.text if hasattr(user_input, "text") else str(user_input)
+        st.write("user_input object:", user_input)
+        st.write("user_input.file:", getattr(user_input.files[0], "file", None))
+        st.write("user_input.text:", getattr(user_input, "text", None))
+        # user_text = user_input.text if hasattr(user_input, "text") else str(user_input)
 
-        file_path = None
-        if hasattr(user_input, "file") and user_input.file is not None:
-            uploaded_file = user_input.files[0]
-            file_path = os.path.join(UPLOAD_DIR, uploaded_file.file.name)            
-            with open(file_path, "wb") as f:
-                f.write(uploaded_file.file.read())
+        # file_path = None
+        # if hasattr(user_input, "file") and user_input.file is not None:
+        #     uploaded_file = user_input.files[0]
+        #     file_path = os.path.join(UPLOAD_DIR, uploaded_file.file.name)            
+        #     with open(file_path, "wb") as f:
+        #         f.write(uploaded_file.file.read())
            
-            st.write(file_path)
-            st.success(f"File saved to {file_path}")
+        #     st.write(f"this is the path:{file_path}")
+        #     st.success(f"File saved to {file_path}")
 
         # st.session_state.messages.append({"role": "user", "content": user_text})       
 
