@@ -19,4 +19,11 @@
   * docker run --name llm-containr --gpus all -v /home/marfok/CLONED_REPOS/LLM-World/Notebooks/:/home/notebooks -v /home/marfok/CLONED_REPOS/LLM-World/Files/:/home/files -p 8890:8888 llm-image:latest   
 ### Shell Container
 * docker exec -it (container-id) bash  
-  * start server: jupyter notebook --ip 0.0.0.0 --port 8090 --allow-root --no-browser     
+  * start server: jupyter notebook --ip 0.0.0.0 --port 8090 --allow-root --no-browser
+
+### Trainer script
+  * docker run -it --gpus all \
+  -v /home/marfok/CLONED_REPOS/LLM-World/Notebooks/:/home/notebooks \
+  -v /home/marfok/CLONED_REPOS/LLM-World/Files/:/home/files \
+  llm-image:latest \
+  python src/oss-train.py    
