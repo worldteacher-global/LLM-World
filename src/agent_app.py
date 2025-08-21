@@ -163,10 +163,10 @@ if __name__=='__main__':
         file_path = None
         if hasattr(user_input, "files") and user_input.files[0].name is not None:
             uploaded_file = user_input.files[0]
-            file_path = os.path.join(UPLOAD_DIR, uploaded_file.file.name)            
+            file_path = os.path.join(UPLOAD_DIR, uploaded_file.name)            
             with open(file_path, "wb") as f:
                 f.write(uploaded_file.file.read())
-           
+                           
             st.write(f"this is the path:{file_path}")
         #     st.success(f"File saved to {file_path}")
 
