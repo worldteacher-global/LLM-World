@@ -161,15 +161,13 @@ if __name__=='__main__':
         user_text = user_input.text if hasattr(user_input, "text") else str(user_input)
         # st.write(user_text)
         file_path = None
-        if hasattr(user_input, "files"):# and user_input.file[0].name is not None:
-            st.write(user_input.files[0].name)
-
-        #     uploaded_file = user_input.files[0]
-        #     file_path = os.path.join(UPLOAD_DIR, uploaded_file.file.name)            
-        #     with open(file_path, "wb") as f:
-        #         f.write(uploaded_file.file.read())
+        if hasattr(user_input, "files") and user_input.files[0].name is not None:
+            uploaded_file = user_input.files[0]
+            file_path = os.path.join(UPLOAD_DIR, uploaded_file.file.name)            
+            with open(file_path, "wb") as f:
+                f.write(uploaded_file.file.read())
            
-        #     st.write(f"this is the path:{file_path}")
+            st.write(f"this is the path:{file_path}")
         #     st.success(f"File saved to {file_path}")
 
         # st.session_state.messages.append({"role": "user", "content": user_text})       
