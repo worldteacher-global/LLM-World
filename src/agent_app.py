@@ -153,11 +153,11 @@ if __name__=='__main__':
     os.makedirs(UPLOAD_DIR, exist_ok=True)
 
     # if user_input := st.chat_input("Hello! Please submit a question or request:", accept_file=True, file_type=[".csv"]):
-    user_input = st.chat_input("Hello! Please submit a question or request:", accept_file=True, file_type=[".csv"])
-    st.write("user_input object:", user_input)
-    st.write("user_input.file:", getattr(user_input, "file", None))
-    st.write("user_input.text:", getattr(user_input, "text", None))
-    # if user_input:
+    user_input = st.chat_input("Hello! Please submit a question or request:", accept_file=True, file_type=[".csv"])        
+    if user_input:
+        st.write("user_input object:", user_input)
+        st.write("user_input.file:", getattr(user_input, "file", None))
+        st.write("user_input.text:", getattr(user_input, "text", None))
     #     if hasattr(user_input, "text"):
     #         user_text = user_input.text
     #     else:
