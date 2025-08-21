@@ -5,4 +5,6 @@ Multi-Agent copy.ipynb
 agent_app copy.py
 src/__pycache__/
 myenv/
-
+Notebooks/generated_plots
+Files/OSS_Training_Output/
+gpt-oss-20b-multilingual-reasoner/
