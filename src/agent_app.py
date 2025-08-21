@@ -81,7 +81,7 @@ async def _multiAgent(user_input: str) -> Tuple[str, str | None]:
                    'Here are your agents and their capabilities:\n'
                    '- **visualization_agent**: Use this for any requests related to creating plots, charts, or graphs (e.g., "create a scatter plot").\n'
                    '- **statistics_agent**: Use this for requests involving statistical calculations or explanations (e.g., "what is normality?", "calculate the correlation").\n\n'
-                   'After an agent completes its work, you will receive the results. Collate all results, render and display any result from the visualization agent in the collate .\n'
+                   'After an agent completes its work, you will receive the results. Collate all results, render and display any result from the visualization agent.\n'
                    'When all work is done, or if the user asks a simple question you can answer directly (like "hello"), you MUST use the `final_answer` tool to provide the complete response.'),
         ('placeholder', '{messages}')
     ])
@@ -105,17 +105,25 @@ async def _multiAgent(user_input: str) -> Tuple[str, str | None]:
         if "supervisor" in chunk:
             messages = chunk["supervisor"].get("messages", [])
             for message in messages:
-                # The final answer is now the content of the `final_answer` ToolMessage.
-                if isinstance(message, ToolMessage) and message.name == "final_answer":
-                    content = message.content
-                    # Check if the final answer also contains a base64 string
-                    if "base64_image:" in content:
-                        parts = content.split("base64_image:", 1)
-                        # Provide a nice default message if there's no other text
-                        final_text_response = parts[0].strip() if parts[0].strip() else "A visualization has been generated for you."
-                        base64_image_data = parts[1]
-                    else:
-                        final_text_response = content
+                if isinstance(message, ToolMessage):
+                    # Capture base64 images separately
+                    if message.name == "display_base64_image":
+                        base64_image_data = message.content
+                # Capture text only from final_answer
+                elif message.name == "final_answer":
+                    final_text_response = message.content
+
+                # # The final answer is now the content of the `final_answer` ToolMessage.
+                # if isinstance(message, ToolMessage):# and message.name == "final_answer":
+                #     content = message.content
+                #     # Check if the final answer also contains a base64 string
+                #     if "base64_image:" in content:
+                #         parts = content.split("base64_image:", 1)
+                #         # Provide a nice default message if there's no other text
+                #         final_text_response = parts[0].strip() if parts[0].strip() else "A visualization has been generated for you."
+                #         base64_image_data = parts[1]
+                #     else:
+                #         final_text_response = content
 
     return final_text_response.strip(), base64_image_data
 
