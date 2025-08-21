@@ -140,7 +140,7 @@ def multiAgent(user_query: str, file_path: str | None = None) -> Tuple[str, str 
 if __name__=='__main__':
     st.set_page_config(layout="wide")
 
-    st.title("Multi-Agent Analysis Framework")
+    st.title("Statistics Agent")
     if 'messages' not in st.session_state: st.session_state.messages = []
 
     for message in st.session_state.messages:
@@ -153,7 +153,7 @@ if __name__=='__main__':
     os.makedirs(UPLOAD_DIR, exist_ok=True)
 
     # if user_input := st.chat_input("Hello! Please submit a question or request:", accept_file=True, file_type=[".csv"]):
-    user_input = st.chat_input("Hello! Please submit a question or request:", accept_file=True, file_type=[".csv"])        
+    user_input = st.chat_input("Hello! Please submit a statistics related question or request:", accept_file=True, file_type=[".csv"])        
     if user_input:
         # st.write("user_input object:", user_input)
         # st.write("user_input.file:", user_input.files[0].name)
