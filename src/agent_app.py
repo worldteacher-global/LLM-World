@@ -50,7 +50,12 @@ def normalize_messages(state: MessagesState) -> MessagesState:
     state['messages'] = new_messages
     return state
 
-async def _multiAgent(user_input: str) -> Tuple[str, str | None]:
+async def _multiAgent(user_input: str , file_path: str | None = None) -> Tuple[str, str | None]:
+
+    user_message = user_input
+    if file_path:
+        user__message += f"\n\nCSV file path: {file_path}"
+
     client = MultiServerMCPClient({"mcp_tools": {"url": os.getenv('MCP_URL'), "transport": "sse"}})
     mcp_tools = await client.get_tools()
     mcp_tool = next((obj for obj in mcp_tools if obj.name == 'google_search_tool'), None)
@@ -101,7 +106,7 @@ async def _multiAgent(user_input: str) -> Tuple[str, str | None]:
     final_text_response = "Agent processing complete, but no final summary was generated."
     base64_image_data = None
     
-    async for chunk in supervisor.astream({'messages': [{'role': 'user', 'content': user_input}]}, config=config):
+    async for chunk in supervisor.astream({'messages': [{'role': 'user', 'content': user_message}]}, config=config):
         if "supervisor" in chunk:
             messages = chunk["supervisor"].get("messages", [])
             for message in messages:
@@ -147,7 +152,20 @@ if __name__=='__main__':
             
     if user_input := st.chat_input("Hello! Please submit a question or request:", accept_file=True, file_type=[".csv"]):
         st.session_state.messages.append({"role": "user", "content": user_input})
-        
+        # Check if a file was uploaded
+        if hasattr(user_input, "name") and hasattr(user_input, "read"):
+            upload_dir = "uploaded_files"
+            os.makedirs(upload_dir, exist_ok=True)
+            file_path = os.path.join(upload_dir, user_input.name)
+
+            # Save uploaded file to disk
+            with open(file_path, "wb") as f:
+                f.write(user_input.read())
+
+            st.success(f"File saved to {file_path}")
+        else:
+            file_path = None
+
         with st.chat_message("user"): st.markdown(user_input)
         
         with st.spinner("Agents are collaborating on your request..."):
@@ -165,20 +183,7 @@ if __name__=='__main__':
                 msg_to_store["image"] = image_to_display
             st.session_state.messages.append(msg_to_store)
 
-    ## logic for file uploads     
     
-    # file_uploaded = st.file_uploader("Upload a file.", type="csv")
-
-    # UPLOAD_FOLDER = "uploaded_file"
-    # if not os.path.exists(UPLOAD_FOLDER):
-    #     os.makedirs(UPLOAD_FOLDER)
-
-    # if file_uploaded:
-    #     file_path = os.path.join(UPLOAD_FOLDER,file_uploaded.name)
-    #     with open(file_path, "wb") as f:
-    #         f.write(file_uploaded.getbuffer())
-            
-        # st.success(f"File was saved at: {file_path}")
 
 
 
