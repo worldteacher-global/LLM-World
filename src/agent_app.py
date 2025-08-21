@@ -166,8 +166,8 @@ if __name__=='__main__':
             
             with open(file_path, "wb") as f:
                 f.write(user_input.file.read())
-            with st.spinner("Agents are collaborating on your request..."):
-                st.markdown(file_path)
+           
+            st.markdown(file_path)
             st.success(f"File saved to {file_path}")
 
         st.session_state.messages.append({"role": "user", "content": user_text})       
