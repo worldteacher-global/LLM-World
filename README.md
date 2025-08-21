@@ -20,7 +20,13 @@
 ### Shell Container
 * docker exec -it (container-id) bash  
   * start server: jupyter notebook --ip 0.0.0.0 --port 8090 --allow-root --no-browser
-
+### jupyter + Gradio (fails)
+* docker run -it --name llm-container --gpus all \
+  -v /home/marfok/CLONED_REPOS/LLM-World/Notebooks/:/home/notebooks \
+  -v /home/marfok/CLONED_REPOS/LLM-World/Files/:/home/files \
+  -p 8890:8888 \
+  -p 7860:7860 \
+  llm-image:latest
 ### Trainer script
   * docker run -it --gpus all \
   -v /home/marfok/CLONED_REPOS/LLM-World/Notebooks/:/home/notebooks \
