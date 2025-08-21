@@ -162,7 +162,7 @@ if __name__=='__main__':
         # st.write(user_text)
         file_path = None
         if hasattr(user_input, "files"):# and user_input.file[0].name is not None:
-            st.write(user_input)
+            st.write(user_input.files[0].name)
 
         #     uploaded_file = user_input.files[0]
         #     file_path = os.path.join(UPLOAD_DIR, uploaded_file.file.name)            
