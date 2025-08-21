@@ -167,6 +167,10 @@ if __name__=='__main__':
             with open(file_path, "wb") as f:
                 f.write(uploaded_file.read())
             uploaded_file.seek(0)
+
+            st.session_state["uploaded_file_path"] = file_path
+        elif "uploaded_file_path" in st.session_state:
+            file_path = st.session_state["uploaded_file_path"]
         else:
             uploaded_file = None
             file_path = None
