@@ -159,10 +159,11 @@ if __name__=='__main__':
         # st.write("user_input.file:", user_input.files[0].name)
         # st.write("user_input.text:", user_input.text)
         user_text = user_input.text if hasattr(user_input, "text") else str(user_input)
-        st.write(user_text)
+        # st.write(user_text)
+        file_path = None
+        if hasattr(user_input, "file") and user_input.file[0].name is not None:
+            st.write(user_input.file[0].name)
 
-        # file_path = None
-        # if hasattr(user_input, "file") and user_input.file is not None:
         #     uploaded_file = user_input.files[0]
         #     file_path = os.path.join(UPLOAD_DIR, uploaded_file.file.name)            
         #     with open(file_path, "wb") as f:
