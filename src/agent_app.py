@@ -161,7 +161,7 @@ if __name__=='__main__':
         user_text = user_input.text if hasattr(user_input, "text") else str(user_input)
         # st.write(user_text)
         file_path = None
-        if hasattr(user_input, "file"):# and user_input.file[0].name is not None:
+        if hasattr(user_input, "files"):# and user_input.file[0].name is not None:
             st.write(user_input)
 
         #     uploaded_file = user_input.files[0]
