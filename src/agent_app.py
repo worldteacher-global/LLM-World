@@ -149,22 +149,27 @@ if __name__=='__main__':
             if message.get("image"): st.image(message["image"], caption="Generated Visualization")
     
 
-            
-    if user_input := st.chat_input("Hello! Please submit a question or request:", accept_file=True, file_type=[".csv"]):
+    UPLOAD_DIR = "uploaded_files"
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+    # if user_input := st.chat_input("Hello! Please submit a question or request:", accept_file=True, file_type=[".csv"]):
+    user_input = st.chat_input("Hello! Please submit a question or request:", accept_file=True, file_type=[".csv"])
+    if user_input:
+        if hasattr(user_input, "text"):
+            user_text = user_input.text
+        else:
+            user_text = str(user_input)
+
+        file_path = None
+        if hasattr(user_input, "file") and user_input.file is not None:
+            file_path = os.path.join(UPLOAD_DIR, user_input.file.name)
+        with open(file_path, "wb") as f:
+            f.write(user_input.file.read())
+        st.success(f"File saved to {file_path}")
+
         st.session_state.messages.append({"role": "user", "content": user_input})
         # Check if a file was uploaded
-        if hasattr(user_input, "name") and hasattr(user_input, "read"):
-            upload_dir = "uploaded_files"
-            os.makedirs(upload_dir, exist_ok=True)
-            file_path = os.path.join(upload_dir, user_input.name)
-
-            # Save uploaded file to disk
-            with open(file_path, "wb") as f:
-                f.write(user_input.read())
-
-            st.success(f"File saved to {file_path}")
-        else:
-            file_path = None
+        
 
         with st.chat_message("user"): st.markdown(user_input)
         
