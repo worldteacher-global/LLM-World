@@ -110,8 +110,8 @@ async def _multiAgent(user_input: str) -> Tuple[str, str | None]:
                     if message.name == "display_base64_image":
                         base64_image_data = message.content
                 # Capture text only from final_answer
-                elif message.name == "final_answer":
-                    final_text_response = message.content
+                    elif message.name == "final_answer":
+                        final_text_response = message.content
 
                 # # The final answer is now the content of the `final_answer` ToolMessage.
                 # if isinstance(message, ToolMessage):# and message.name == "final_answer":
