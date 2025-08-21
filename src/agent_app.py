@@ -167,14 +167,14 @@ if __name__=='__main__':
             f.write(user_input.file.read())
         st.success(f"File saved to {file_path}")
 
-        st.session_state.messages.append({"role": "user", "content": user_input})
+        st.session_state.messages.append({"role": "user", "content": user_text})
         # Check if a file was uploaded
         
 
-        with st.chat_message("user"): st.markdown(user_input)
+        with st.chat_message("user"): st.markdown(user_text)
         
         with st.spinner("Agents are collaborating on your request..."):
-            text_result, image_to_display = multiAgent(user_input)
+            text_result, image_to_display = multiAgent(user_text, file_path=file_path)
         
         with st.chat_message("assistant"):
             if text_result:
