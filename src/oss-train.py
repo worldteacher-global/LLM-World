@@ -77,7 +77,7 @@ dataset = load_dataset("HuggingFaceH4/Multilingual-Thinking", split="train")
 trainer = SFTTrainer(
     model=peft_model,
     args=training_args,
-    train_dataset=dataset#.shuffle(buffer_size=1000),
+    train_dataset=dataset,#.shuffle(buffer_size=1000),
     processing_class=tokenizer   
 )
 # -----------------------------
