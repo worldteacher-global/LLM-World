@@ -58,7 +58,7 @@ class MyTools:
 
     @tool
     @staticmethod
-    def calculate_PC(path: str):
+    def calculate_PC(path: str | None = None):
         '''Calculate principal components'''
         data = pd.read_csv(path)
         mu = data.to_numpy().mean(axis=0)
@@ -76,7 +76,7 @@ class MyTools:
 
     @tool
     @staticmethod
-    def levene_test(path: str):
+    def levene_test(path: str | None = None):
         '''Calculate levene's test for equality of variances'''
         data = pd.read_csv(path)
         data = np.array(data).T
@@ -96,7 +96,7 @@ class MyTools:
 
     @tool
     @staticmethod
-    def anova_one_way(path: str):
+    def anova_one_way(path: str | None = None):
         '''Calculate one-way-anova'''
         dd = pd.read_csv(path)               
         k = dd.shape[1]
@@ -119,7 +119,7 @@ class MyTools:
 
     @tool
     @staticmethod
-    def covariance_tool(path: str):
+    def covariance_tool(path: str | None = None):
         '''Calculate covariance'''
         df = pd.read_csv(path)
         cov = df.cov()
@@ -129,7 +129,7 @@ class MyTools:
 
     @tool
     @staticmethod
-    def correlation_tool(path: str):
+    def correlation_tool(path: str | None = None):
         '''Calculate correlation'''
         df = pd.read_csv(path)
         corr = df.corr()
@@ -139,7 +139,7 @@ class MyTools:
         
     @tool
     @staticmethod
-    def normality_tool(path: str):
+    def normality_tool(path: str | None = None):
         '''Calculate if the data is normal'''
         df = pd.read_csv(path)
         for col in df.columns:
