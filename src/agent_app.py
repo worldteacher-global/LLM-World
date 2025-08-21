@@ -52,9 +52,9 @@ def normalize_messages(state: MessagesState) -> MessagesState:
 
 async def _multiAgent(user_input: str , file_path: str | None = None) -> Tuple[str, str | None]:
 
-    user_message = user_input
+    user_message = f"{user_input}"
     if file_path is not None: 
-        user_message += f"\n\nCSV file path: {file_path}"
+        user_message += f"\n\n[CSV_FILR_PATH]={file_path}"
 
     client = MultiServerMCPClient({"mcp_tools": {"url": os.getenv('MCP_URL'), "transport": "sse"}})
     mcp_tools = await client.get_tools()
@@ -167,9 +167,7 @@ if __name__=='__main__':
                 f.write(user_input.file.read())
             st.success(f"File saved to {file_path}")
 
-        st.session_state.messages.append({"role": "user", "content": user_text})
-        # Check if a file was uploaded
-        
+        st.session_state.messages.append({"role": "user", "content": user_text})       
 
         with st.chat_message("user"): st.markdown(user_text)
         
