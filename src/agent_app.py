@@ -53,7 +53,7 @@ def normalize_messages(state: MessagesState) -> MessagesState:
 async def _multiAgent(user_input: str , file_path: str | None = None) -> Tuple[str, str | None]:
 
     user_message = user_input
-    if file_path:
+    if file_path is not None: 
         user__message += f"\n\nCSV file path: {file_path}"
 
     client = MultiServerMCPClient({"mcp_tools": {"url": os.getenv('MCP_URL'), "transport": "sse"}})
