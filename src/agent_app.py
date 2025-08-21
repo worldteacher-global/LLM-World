@@ -163,9 +163,9 @@ if __name__=='__main__':
         file_path = None
         if hasattr(user_input, "file") and user_input.file is not None:
             file_path = os.path.join(UPLOAD_DIR, user_input.file.name)
-        with open(file_path, "wb") as f:
-            f.write(user_input.file.read())
-        st.success(f"File saved to {file_path}")
+            with open(file_path, "wb") as f:
+                f.write(user_input.file.read())
+            st.success(f"File saved to {file_path}")
 
         st.session_state.messages.append({"role": "user", "content": user_text})
         # Check if a file was uploaded
