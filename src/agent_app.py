@@ -209,8 +209,8 @@ if __name__=='__main__':
                 # else:
                 #     file_path = image_to_display###
 
-                st.image(file_path, caption="Generated Visualization")
-                msg_to_store["image"] = file_path
+                st.image(image_to_display, caption="Generated Visualization")
+                msg_to_store["image"] = image_to_display
             st.session_state.messages.append(msg_to_store)
 
     
