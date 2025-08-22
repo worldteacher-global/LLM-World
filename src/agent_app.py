@@ -201,6 +201,8 @@ if __name__=='__main__':
             if image_to_display:
                 # st.write(image_to_display['filepath'])
                 st.write(image_to_display)
+                st.write(type(image_to_display))
+                st.write(image_to_display["filepath"])
                 # if isinstance(image_to_display, dict) and "filepath" in image_to_display:###
                 #     file_path = image_to_display["filepath"]
                 # else:
