@@ -212,17 +212,21 @@ class MyTools:
     
     @tool
     @staticmethod
-    def display_base64_image(file_path: str | None = None,
+    def display_base64_image(filepath: str | None = None,
         base64_string: str | None = None,
         caption: str = "Image"):
         """Displays an image from either a file path, base64-encoded string, or reads from directory."""
 
-        result = {"status": "ok", "caption": caption}
+        if isinstance(filepath, dict) and "filepath" in filepath:
+            file_path = filepath["filepath"]
+        else:
+            file_path = filepath
+
         # Load from file path
         if file_path and os.path.exists(file_path):
             st.image(file_path, caption=caption)
             # img = Image.open(file_path)
-            # plt.imshow(img)
+            # img.show()
             return {"status": "ok", "caption": caption, "filepath": file_path}
 
         # Load from base64
