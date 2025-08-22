@@ -228,7 +228,7 @@ class MyTools:
             st.image(file_path, caption=caption)
             # img = Image.open(file_path)
             # plt.imshow(img)
-            return dict(status=ok,caption=caption, filepath= file_path)
+            return file_path
             # return {"status": "ok", "caption": caption, "filepath": file_path}
 
         # Load from base64
