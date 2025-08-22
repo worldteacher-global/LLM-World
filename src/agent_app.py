@@ -159,7 +159,7 @@ if __name__=='__main__':
         # st.write("user_input object:", user_input)
         # st.write("user_input.file:", user_input.files[0].name)
         # st.write("user_input.text:", user_input.text)
-        st.image('generated_plots/plot_20250822_130142_72821bdb.png')
+        # st.image('generated_plots/plot_20250822_130142_72821bdb.png')
         user_text = user_input.text if hasattr(user_input, "text") else str(user_input)
       
         file_path = None
@@ -202,8 +202,8 @@ if __name__=='__main__':
                 else:
                     file_path = image_to_display###
 
-                st.image(image_to_display, caption="Generated Visualization")
-                msg_to_store["image"] = image_to_display
+                st.image(file_path, caption="Generated Visualization")
+                msg_to_store["image"] = file_path
             st.session_state.messages.append(msg_to_store)
 
     
