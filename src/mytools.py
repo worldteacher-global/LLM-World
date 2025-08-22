@@ -223,7 +223,7 @@ class MyTools:
             file_path = filepath
 
         # Load from file path
-        if file_path and os.path.exists(file_path):
+        if file_path and isinstance(file_path, str) and os.path.exists(file_path):
             st.image(file_path, caption=caption)
             # img = Image.open(file_path)
             # img.show()
