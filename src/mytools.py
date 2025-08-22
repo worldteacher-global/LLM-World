@@ -204,7 +204,8 @@ class MyTools:
         # print(f"Plot saved to: {filepath}")
   
         # return PlotResponse(base64_string=img_base64)
-        return {"output":filepath} ## Worked!!
+        # return {"output":filepath} ## Worked!!
+        return filepath## Worked!!
         # return {"output":img_base64} ## Worked!!
         # return json.dumps({"return":img_base64},indent=3)
   
@@ -212,15 +213,15 @@ class MyTools:
     
     @tool
     @staticmethod
-    def display_base64_image(filepath: str | None = None,
+    def display_base64_image(file_path: str | None = None,
         base64_string: str | None = None,
         caption: str = "Image"):
         """Displays an image from either a file path, base64-encoded string, or reads from directory."""
 
-        if isinstance(filepath, dict) and "filepath" in filepath:
-            file_path = filepath["filepath"]
-        else:
-            file_path = filepath
+        # if isinstance(filepath, dict) and "filepath" in filepath:
+        #     file_path = filepath["filepath"]
+        # else:
+        #     file_path = filepath
 
         # Load from file path
         if file_path and isinstance(file_path, str) and os.path.exists(file_path):
