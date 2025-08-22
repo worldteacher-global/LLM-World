@@ -205,7 +205,7 @@ class MyTools:
   
         # return PlotResponse(base64_string=img_base64)
         # return {"output":filepath} ## Worked!!
-        return filepath## Worked!!
+        return filepath
         # return {"output":img_base64} ## Worked!!
         # return json.dumps({"return":img_base64},indent=3)
   
@@ -227,21 +227,21 @@ class MyTools:
         if file_path and isinstance(file_path, str) and os.path.exists(file_path):
             st.image(file_path, caption=caption)
             # img = Image.open(file_path)
-            # img.show()
+            # plt.imshow(img)
             return {"status": "ok", "caption": caption, "filepath": file_path}
 
         # Load from base64
-        if base64_string:
-            if base64_string.startswith("base64_image:"):
-                base64_string = base64_string[13:]
+        # if base64_string:
+        #     if base64_string.startswith("base64_image:"):
+        #         base64_string = base64_string[13:]
 
-            if base64_string.startswith("data:image/png;base64,"):
-                base64_string = base64_string.split(",", 1)[1]
+        #     if base64_string.startswith("data:image/png;base64,"):
+        #         base64_string = base64_string.split(",", 1)[1]
 
-            # image_bytes = base64.b64decode(base64_string)
-            image_bytes = base64.b64decode(base64_string.encode("utf-8"))
-            # image = Image.open(io.BytesIO(image_bytes))
-            st.image(image_bytes, caption=caption)
-            return {"status": "ok", "caption": caption}
+        #     # image_bytes = base64.b64decode(base64_string)
+        #     image_bytes = base64.b64decode(base64_string.encode("utf-8"))
+        #     # image = Image.open(io.BytesIO(image_bytes))
+        #     st.image(image_bytes, caption=caption)
+        #     return {"status": "ok", "caption": caption}
 
         return {"status": "error", "message": "No image found"}
