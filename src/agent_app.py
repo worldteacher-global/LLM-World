@@ -201,7 +201,7 @@ if __name__=='__main__':
             
             if image_to_display:
                 # st.write(image_to_display['filepath'])
-                st.write(image_to_display)
+                # st.write(image_to_display)
                 # st.write(type(image_to_display))
                 # st.write(image_to_display["filepath"])
                 # if isinstance(image_to_display, dict) and "filepath" in image_to_display:###
@@ -209,8 +209,8 @@ if __name__=='__main__':
                 # else:
                 #     file_path = image_to_display###
 
-                # st.image(file_path, caption="Generated Visualization")
-                # msg_to_store["image"] = file_path
+                st.image(file_path, caption="Generated Visualization")
+                msg_to_store["image"] = file_path
             st.session_state.messages.append(msg_to_store)
 
     
