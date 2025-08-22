@@ -189,21 +189,24 @@ if __name__=='__main__':
             text_result, image_to_display = multiAgent(user_text, file_path=file_path)
         
         with st.chat_message("assistant"):
+            
             if text_result:
                 st.markdown(text_result)
                 msg_to_store = {"role": "assistant", "content": text_result}
+            
             else:
                 st.warning("The agent process completed, but no text output was returned.")
                 msg_to_store = {"role": "assistant", "content": "No text output was generated."}
+            
             if image_to_display:
-                
-                if isinstance(image_to_display, dict) and "filepath" in image_to_display:###
-                    file_path = image_to_display["filepath"]
-                else:
-                    file_path = image_to_display###
+                st.write(image_to_display)
+                # if isinstance(image_to_display, dict) and "filepath" in image_to_display:###
+                #     file_path = image_to_display["filepath"]
+                # else:
+                #     file_path = image_to_display###
 
-                st.image(file_path, caption="Generated Visualization")
-                msg_to_store["image"] = file_path
+                # st.image(file_path, caption="Generated Visualization")
+                # msg_to_store["image"] = file_path
             st.session_state.messages.append(msg_to_store)
 
     
