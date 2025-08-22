@@ -159,6 +159,7 @@ if __name__=='__main__':
         # st.write("user_input object:", user_input)
         # st.write("user_input.file:", user_input.files[0].name)
         # st.write("user_input.text:", user_input.text)
+        st.image('generated_plots')
         user_text = user_input.text if hasattr(user_input, "text") else str(user_input)
       
         file_path = None
@@ -195,6 +196,12 @@ if __name__=='__main__':
                 st.warning("The agent process completed, but no text output was returned.")
                 msg_to_store = {"role": "assistant", "content": "No text output was generated."}
             if image_to_display:
+                
+                if isinstance(image_to_display, dict) and "filepath" in image_to_display:###
+                    file_path = image_to_display["filepath"]
+                else:
+                    file_path = image_to_display###
+
                 st.image(image_to_display, caption="Generated Visualization")
                 msg_to_store["image"] = image_to_display
             st.session_state.messages.append(msg_to_store)
