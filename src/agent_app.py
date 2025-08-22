@@ -199,7 +199,8 @@ if __name__=='__main__':
                 msg_to_store = {"role": "assistant", "content": "No text output was generated."}
             
             if image_to_display:
-                st.write(image_to_display['filepath'])
+                # st.write(image_to_display['filepath'])
+                st.write(image_to_display)
                 # if isinstance(image_to_display, dict) and "filepath" in image_to_display:###
                 #     file_path = image_to_display["filepath"]
                 # else:
