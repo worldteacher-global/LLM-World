@@ -199,13 +199,13 @@ class MyTools:
         plt.close()
         
         # Also create base64 for backward compatibility
-        with open(filepath, "rb") as img_file:
-            img_base64 = base64.b64encode(img_file.read()).decode("utf-8")
-        
-        print(f"Plot saved to: {filepath}")
+        # with open(filepath, "rb") as img_file:
+        #     img_base64 = base64.b64encode(img_file.read()).decode("utf-8")        
+        # print(f"Plot saved to: {filepath}")
   
         # return PlotResponse(base64_string=img_base64)
-        return {"output":img_base64} ## Worked!!
+        return {"output":filepath} ## Worked!!
+        # return {"output":img_base64} ## Worked!!
         # return json.dumps({"return":img_base64},indent=3)
   
         # return PlotResponse(base64_string=img_base64, filepath=filepath)
@@ -221,6 +221,8 @@ class MyTools:
         # Load from file path
         if file_path and os.path.exists(file_path):
             st.image(file_path, caption=caption)
+            # img = Image.open(file_path)
+            # plt.imshow(img)
             return {"status": "ok", "caption": caption, "filepath": file_path}
 
         # Load from base64
