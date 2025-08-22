@@ -225,7 +225,7 @@ class MyTools:
 
         # Load from file path
         if file_path and isinstance(file_path, str) and os.path.exists(file_path):
-            st.image(file_path, caption=caption)
+            # st.image(file_path, caption=caption)
             # img = Image.open(file_path)
             # plt.imshow(img)
             return {"status": "ok", "caption": caption, "filepath": file_path}
