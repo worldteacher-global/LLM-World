@@ -86,7 +86,8 @@ async def _multiAgent(user_input: str , file_path: str | None = None) -> Tuple[s
                    'Here are your agents and their capabilities:\n'
                    '- **visualization_agent**: Use this for any requests related to creating plots, charts, or graphs (e.g., "create a scatter plot").\n'
                    '- **statistics_agent**: Use this for requests involving statistical calculations or explanations (e.g., "what is normality?", "calculate the correlation").\n\n'
-                   'After an agent completes its work, you will receive the results. Collate all results, render and display any result from the visualization agent.\n'
+                #    'After an agent completes its work, you will receive the results. Collate all results, render and display any result from the visualization agent.\n'
+                   'Summarise the work of each agent that produced a result. \n'
                    'When all work is done, or if the user asks a simple question you can answer directly (like "hello"), you MUST use the `final_answer` tool to provide the complete response.'),
         ('placeholder', '{messages}')
     ])
