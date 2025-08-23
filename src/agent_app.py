@@ -141,6 +141,14 @@ def multiAgent(user_query: str, file_path: str | None = None):
         yield text_result, image_bytes
     # return asyncio.run(_multiAgent(user_input=user_query, file_path=file_path))
 
+def multiAgent_sync(user_text, file_path=None):
+    async def run_multiAgent():
+        results = []
+        async for text_result, image_bytes in _multiAgent(user_text, file_path=file_path):
+            results.append((text_result, image_bytes))
+        return results
+
+    return asyncio.run(run_multiAgent())
 
 
 if __name__=='__main__':
@@ -189,14 +197,14 @@ if __name__=='__main__':
         
         with st.spinner("Agents are collaborating on your request..."):            
 
-            async def run_multiAgent():
-                async for text_result, image_bytes in _multiAgent(user_text, file_path=file_path):
-                    if text_result:
-                        st.markdown(text_result)
-                    if image_bytes:
-                        st.image(image_bytes, caption="Generated Visualization")
+            results = multiAgent_sync(user_text, file_path=file_path)
+            for text_result, image_bytes in results:
+                if text_result:
+                    st.markdown(text_result)
+                if image_bytes:
+                    st.image(image_bytes, caption="Generated Visualization")
 
-            asyncio.run(run_multiAgent())
+
 
             # for text_result, image_bytes in asyncio.run(multiAgent(user_text, file_path=file_path)):
             #     with st.chat_message("assistant"):
@@ -205,15 +213,15 @@ if __name__=='__main__':
             #         if image_bytes:
             #             st.image(image_bytes, caption="Generated Visualization")
         
-        with st.chat_message("assistant"):
+        # with st.chat_message("assistant"):
             
-            if text_result:
-                st.markdown(text_result)
-                msg_to_store = {"role": "assistant", "content": text_result}
+        #     if text_result:
+        #         st.markdown(text_result)
+        #         msg_to_store = {"role": "assistant", "content": text_result}
             
-            else:
-                st.warning("The agent process completed, but no text output was returned.")
-                msg_to_store = {"role": "assistant", "content": "No text output was generated."}
+        #     else:
+        #         st.warning("The agent process completed, but no text output was returned.")
+        #         msg_to_store = {"role": "assistant", "content": "No text output was generated."}
             
             # if image_to_display:
             #     st.image(image_to_display, caption="Generated Visualization")
