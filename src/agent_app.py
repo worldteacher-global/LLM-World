@@ -121,25 +121,12 @@ async def _multiAgent(user_input: str , file_path: str | None = None) -> Tuple[s
                         final_text_response = message.content
                         yield final_text_response, None
 
-                # # The final answer is now the content of the `final_answer` ToolMessage.
-                # if isinstance(message, ToolMessage):# and message.name == "final_answer":
-                #     content = message.content
-                #     # Check if the final answer also contains a base64 string
-                #     if "base64_image:" in content:
-                #         parts = content.split("base64_image:", 1)
-                #         # Provide a nice default message if there's no other text
-                #         final_text_response = parts[0].strip() if parts[0].strip() else "A visualization has been generated for you."
-                #         base64_image_data = parts[1]
-                #     else:
-                #         final_text_response = content
+
     if final_text_response or base64_image_data:
         yield final_text_response, base64_image_data
     # return final_text_response.strip(), base64_image_data
 
-def multiAgent(user_query: str, file_path: str | None = None):
-    async for text_result, image_bytes in _multiAgent(user_input=user_query, file_path=file_path):
-        yield text_result, image_bytes
-    # return asyncio.run(_multiAgent(user_input=user_query, file_path=file_path))
+
 
 def multiAgent_sync(user_text, file_path=None):
     async def run_multiAgent():
