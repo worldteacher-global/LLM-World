@@ -113,11 +113,13 @@ async def _multiAgent(user_input: str , file_path: str | None = None) -> Tuple[s
             for message in messages:
                 if isinstance(message, ToolMessage):
                     # Capture base64 images separately
-                    if message.name == "display_base64_image":
+                    if message.name == "display_base64_image" or message.name == "gen_plot":
                         base64_image_data = message.content
+                        yield None, base64_image_data
                 # Capture text only from final_answer
                     elif message.name == "final_answer":
                         final_text_response = message.content
+                        yield final_text_response, None
 
                 # # The final answer is now the content of the `final_answer` ToolMessage.
                 # if isinstance(message, ToolMessage):# and message.name == "final_answer":
@@ -130,11 +132,14 @@ async def _multiAgent(user_input: str , file_path: str | None = None) -> Tuple[s
                 #         base64_image_data = parts[1]
                 #     else:
                 #         final_text_response = content
+    if final_text_response or base64_image_data:
+        yield final_text_response, base64_image_data
+    # return final_text_response.strip(), base64_image_data
 
-    return final_text_response.strip(), base64_image_data
-
-def multiAgent(user_query: str, file_path: str | None = None) -> Tuple[str, str | None]:
-    return asyncio.run(_multiAgent(user_input=user_query, file_path=file_path))
+def multiAgent(user_query: str, file_path: str | None = None):
+    async for text_result, image_bytes in _multiAgent(user_input=user_query, file_path=file_path):
+        yield text_result, image_bytes
+    # return asyncio.run(_multiAgent(user_input=user_query, file_path=file_path))
 
 
 
@@ -154,13 +159,10 @@ if __name__=='__main__':
     UPLOAD_DIR = "uploaded_files"
     os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-    # if user_input := st.chat_input("Hello! Please submit a question or request:", accept_file=True, file_type=[".csv"]):
+
     user_input = st.chat_input("Hello! Please submit a statistics related question or request:", accept_file=True, file_type=[".csv"])        
     if user_input:
-        # st.write("user_input object:", user_input)
-        # st.write("user_input.file:", user_input.files[0].name)
-        # st.write("user_input.text:", user_input.text)
-        # st.image('generated_plots/plot_20250822_130142_72821bdb.png')
+        
         user_text = user_input.text if hasattr(user_input, "text") else str(user_input)
       
         file_path = None
@@ -178,7 +180,7 @@ if __name__=='__main__':
             uploaded_file = None
             file_path = None
   
-            # st.success(f"File saved to {file_path}")
+
 
         st.session_state.messages.append({"role": "user", "content": user_text})       
 
@@ -187,7 +189,12 @@ if __name__=='__main__':
         
         with st.spinner("Agents are collaborating on your request..."):
             
-            text_result, image_to_display = multiAgent(user_text, file_path=file_path)
+            for text_result, image_bytes in asyncio.run(multiAgent(user_text, file_path=file_path)):
+                with st.chat_message("assistant"):
+                    if text_result:
+                        st.markdown(text_result)
+                    if image_bytes:
+                        st.image(image_bytes, caption="Generated Visualization")
         
         with st.chat_message("assistant"):
             
@@ -199,19 +206,10 @@ if __name__=='__main__':
                 st.warning("The agent process completed, but no text output was returned.")
                 msg_to_store = {"role": "assistant", "content": "No text output was generated."}
             
-            if image_to_display:
-                # st.write(image_to_display['filepath'])
-                # st.write(image_to_display)
-                # st.write(type(image_to_display))
-                # st.write(image_to_display["filepath"])
-                # if isinstance(image_to_display, dict) and "filepath" in image_to_display:###
-                #     file_path = image_to_display["filepath"]
-                # else:
-                #     file_path = image_to_display###
-
-                st.image(image_to_display, caption="Generated Visualization")
-                msg_to_store["image"] = image_to_display
-            st.session_state.messages.append(msg_to_store)
+            # if image_to_display:
+            #     st.image(image_to_display, caption="Generated Visualization")
+            #     msg_to_store["image"] = image_to_display
+            # st.session_state.messages.append(msg_to_store)
 
     
 
