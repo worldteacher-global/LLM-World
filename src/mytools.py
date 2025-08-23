@@ -183,33 +183,12 @@ class MyTools:
         plt.title(request.title)
         plt.xlabel("X")
         plt.ylabel("Y")
-        # plt.show()
-        # Create directory if it doesn't exist
-        plot_dir = "generated_plots"
-        os.makedirs(plot_dir, exist_ok=True)
-        
-        # Generate unique filename with timestamp
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        unique_id = str(uuid.uuid4())[:8]
-        filename = f"plot_{timestamp}_{unique_id}.png"
-        filepath = os.path.join(plot_dir, filename)
-        
-        # Save the plot to file
-        plt.savefig(filepath, format="png", dpi=100, bbox_inches='tight')
+
+        buf = io.BytesIO()
+        plt.savefig(buf, format="png", dpi=100, bbox_inches='tight')
+        buf.seek(0)
         plt.close()
-        
-        # Also create base64 for backward compatibility
-        # with open(filepath, "rb") as img_file:
-        #     img_base64 = base64.b64encode(img_file.read()).decode("utf-8")        
-        # print(f"Plot saved to: {filepath}")
-  
-        # return PlotResponse(base64_string=img_base64)
-        # return {"output":filepath} ## Worked!!
-        return filepath
-        # return {"output":img_base64} ## Worked!!
-        # return json.dumps({"return":img_base64},indent=3)
-  
-        # return PlotResponse(base64_string=img_base64, filepath=filepath)
+        return buf.getvalue()
     
     @tool
     @staticmethod
@@ -218,31 +197,11 @@ class MyTools:
         caption: str = "Image"):
         """Displays an image from either a file path, base64-encoded string, or reads from directory."""
 
-        # if isinstance(filepath, dict) and "filepath" in filepath:
-        #     file_path = filepath["filepath"]
-        # else:
-        #     file_path = filepath
 
-        # Load from file path
         if file_path and isinstance(file_path, str) and os.path.exists(file_path):
             st.image(file_path, caption=caption)
-            # img = Image.open(file_path)
-            # plt.imshow(img)
+
             return file_path
-            # return {"status": "ok", "caption": caption, "filepath": file_path}
 
-        # Load from base64
-        # if base64_string:
-        #     if base64_string.startswith("base64_image:"):
-        #         base64_string = base64_string[13:]
-
-        #     if base64_string.startswith("data:image/png;base64,"):
-        #         base64_string = base64_string.split(",", 1)[1]
-
-        #     # image_bytes = base64.b64decode(base64_string)
-        #     image_bytes = base64.b64decode(base64_string.encode("utf-8"))
-        #     # image = Image.open(io.BytesIO(image_bytes))
-        #     st.image(image_bytes, caption=caption)
-        #     return {"status": "ok", "caption": caption}
 
         return {"status": "error", "message": "No image found"}
