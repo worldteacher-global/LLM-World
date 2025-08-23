@@ -187,14 +187,23 @@ if __name__=='__main__':
         with st.chat_message("user"): 
             st.markdown(user_text)
         
-        with st.spinner("Agents are collaborating on your request..."):
-            
-            for text_result, image_bytes in asyncio.run(multiAgent(user_text, file_path=file_path)):
-                with st.chat_message("assistant"):
+        with st.spinner("Agents are collaborating on your request..."):            
+
+            async def run_multiAgent():
+                async for text_result, image_bytes in _multiAgent(user_text, file_path=file_path):
                     if text_result:
                         st.markdown(text_result)
                     if image_bytes:
                         st.image(image_bytes, caption="Generated Visualization")
+
+            asyncio.run(run_multiAgent())
+
+            # for text_result, image_bytes in asyncio.run(multiAgent(user_text, file_path=file_path)):
+            #     with st.chat_message("assistant"):
+            #         if text_result:
+            #             st.markdown(text_result)
+            #         if image_bytes:
+            #             st.image(image_bytes, caption="Generated Visualization")
         
         with st.chat_message("assistant"):
             
