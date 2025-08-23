@@ -2,7 +2,8 @@ llmenv/
 .env
 *.env
 Multi-Agent copy.ipynb
-agent_app copy.py
+agent_app_w.py
+mytools_w.py
 src/__pycache__/
 myenv/
 Notebooks/generated_plots
