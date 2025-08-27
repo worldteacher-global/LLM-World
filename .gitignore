@@ -9,3 +9,9 @@ myenv/
 Notebooks/generated_plots
 Files/OSS_Training_Output/
 gpt-oss-20b-multilingual-reasoner/
+src/.ipynb_checkpoints/
+.ipynb_checkpoints/
+Files/.ipynb_checkpoints/
+Notebooks/.ipynb_checkpoints/
+misc/.ipynb_checkpoints/
+misc/model_card/
