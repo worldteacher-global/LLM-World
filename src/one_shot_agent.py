@@ -127,13 +127,13 @@ if __name__=='__main__':
             response = oneshotagent(user_text)            
             
             image_path = None
-            if response:                    
+            if response:  
+                st.session_state.messages.append({"role":"assistant", "content":response['messages'][-1].content})   
+
                 for obj in response['messages']:
                     if isinstance(obj, ToolMessage):     
                         if obj.name=='gen_plot':
-                            image_path=obj.content
-            else:
-                st.session_state.messages.append({"role":"assistant", "content":response['messages'][-1].content})   
+                            image_path=obj.content   
 
             if image_path:
                 # st.image(image_path, caption="Created Plot")
