@@ -1,6 +1,7 @@
 import os
 import sys
-sys.path.append('/home/sagemaker-user/user-default-efs/CLONED_REPOS/LLM-World/src')
+# sys.path.append('/home/sagemaker-user/user-default-efs/CLONED_REPOS/LLM-World/src')
+sys.path.append('/home/ec2-user/BoW/LLM-World/src') ## EC2
 from mytools import MyTools
 from utils import Utils
 from langchain_core.prompts import ChatPromptTemplate
@@ -8,7 +9,8 @@ from langgraph.prebuilt import create_react_agent
 from langchain_mcp_adapters.client import MultiServerMCPClient
 
 from dotenv import load_dotenv
-load_dotenv('/home/sagemaker-user/user-default-efs/CLONED_REPOS/LLM-World/.env')
+# load_dotenv('/home/sagemaker-user/user-default-efs/CLONED_REPOS/LLM-World/.env')
+load_dotenv('/home/ec2-user/BoW/LLM-World/.env')   ## EC2
 import streamlit as st
 
 def oneshotagent(input_prompt: str):
