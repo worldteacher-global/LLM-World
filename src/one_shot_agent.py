@@ -63,8 +63,6 @@ def oneshotagent(input_prompt: str):
             ]
         }
     )
-
-    print(agent_response)
     
     return agent_response
 
@@ -74,18 +72,13 @@ if __name__=='__main__':
     
     result = oneshotagent(query)
 
-    print(result)
-    # final_response = oneshotagent(query)
+    from langchain_core.messages import ToolMessage 
 
+    image_path = None
 
-    # from langchain_core.messages import ToolMessage 
+    for obj in result['messages']:
+        if isinstance(obj, ToolMessage):     
+            if obj.name=='gen_plot':
+                image_path=obj.content
 
-    # image_path = None
-
-    # for obj in final_response['messages']:
-    #     # print(obj.text)
-    #     if isinstance(obj, ToolMessage):
-    #         # print(obj.content)        
-    #         if obj.name=='gen_plot':
-    #             print(obj.content)
-    #             image_path=obj.content
+    print(image_path)
