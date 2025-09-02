@@ -15,8 +15,12 @@ import streamlit as st
 
 from langchain_core.messages import ToolMessage 
 
-def oneshotagent(input_prompt: str):
-    prompt = input_prompt
+def oneshotagent(input_prompt: str, file_upload_path: str):
+    user_message = f"{input_prompt}"
+
+    if file_upload_path is not None:
+        user_message += f"\n\n[CSV_FILE_PATH]={file_upload_path}"
+    # prompt = input_prompt
     
     mcp_client = (
         {
@@ -63,7 +67,7 @@ def oneshotagent(input_prompt: str):
 
     agent_response = agent.invoke(
         {"messages": [
-            {"role":"user", "content":[{"type":"text", "text":prompt}]}
+            {"role":"user", "content":[{"type":"text", "text":user_message}]}
             ]
         }
     )
