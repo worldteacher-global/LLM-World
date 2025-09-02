@@ -140,8 +140,8 @@ if __name__=='__main__':
                 # st.markdown(image_path)
            
      
-            st.session_state.messages.append({"role":"assistant", "content":response})   
-            # st.session_state.messages.append({"role":"assistant", "content":response['messages'][-1].content})      
+            # st.session_state.messages.append({"role":"assistant", "content":response})   
+            st.session_state.messages.append({"role":"assistant", "content":response['messages'][-1].content})      
                 
 
     
