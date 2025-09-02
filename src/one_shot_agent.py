@@ -67,18 +67,73 @@ def oneshotagent(input_prompt: str):
     return agent_response
 
 if __name__=='__main__':
-    # st.
-    query = 'Generate a line plot with the title "Sales Over Time. The x-axis should be [1, 2, 3, 4, 5] representing months, and the y-axis should be [10, 20, 15, 30, 25] representing sales in thousands.'
+   
+    # query = 'Generate a line plot with the title "Sales Over Time. The x-axis should be [1, 2, 3, 4, 5] representing months, and the y-axis should be [10, 20, 15, 30, 25] representing sales in thousands.'
     
-    result = oneshotagent(query)
+    # result = oneshotagent(query)
 
     from langchain_core.messages import ToolMessage 
 
-    image_path = None
+    # image_path = None
 
-    for obj in result['messages']:
-        if isinstance(obj, ToolMessage):     
-            if obj.name=='gen_plot':
-                image_path=obj.content
+    # for obj in result['messages']:
+    #     if isinstance(obj, ToolMessage):     
+    #         if obj.name=='gen_plot':
+    #             image_path=obj.content
 
-    print(image_path)
+    # print(image_path)
+
+    st.title('I am a Statistics Assistant') 
+
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    UPLOAD_DIR = "uploaded_files"
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    
+    prompt = st.chat_input("Hello! Please submit a statistics related question or request:", accept_file=True, file_type=[".csv"])        
+    if prompt:
+        
+        ### File upload
+        user_text = prompt.text if hasattr(prompt, "text") else str(prompt)
+      
+        file_path = None
+        if hasattr(prompt, "files") and prompt.files:
+            uploaded_file = prompt.files[0]
+            file_path = os.path.join(UPLOAD_DIR, uploaded_file.name)            
+            with open(file_path, "wb") as f:
+                f.write(uploaded_file.read())
+            uploaded_file.seek(0)
+
+            st.session_state["uploaded_file_path"] = file_path
+        elif "uploaded_file_path" in st.session_state:
+            file_path = st.session_state["uploaded_file_path"]
+        else:
+            uploaded_file = None
+            file_path = None
+        ###
+
+        st.chat_message("user").markdown(prompt)    
+        st.session_state.messages.append({"role": "user","content":prompt})
+        
+        with st.chat_message("assistant"):
+            
+            response = oneshotagent(prompt)            
+
+            if response:    
+                image_path = None
+                for obj in response['messages']:
+                    if isinstance(obj, ToolMessage):     
+                        if obj.name=='gen_plot':
+                            image_path=obj.content
+          
+            st.image(image_path, caption="Created Plot")
+            st.write(response)            
+     
+            st.session_state.messages.append({"role":"assistant", "content":response})       
+
+    
