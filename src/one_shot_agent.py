@@ -136,12 +136,12 @@ if __name__=='__main__':
                             image_path=obj.content   
 
             if image_path:
-                # st.image(image_path, caption="Created Plot")
-                st.markdown(image_path)
+                st.image(image_path, caption="Created Plot")
+                # st.markdown(image_path)
            
      
-            # st.session_state.messages.append({"role":"assistant", "content":response})   
-            st.session_state.messages.append({"role":"assistant", "content":response['messages'][-1].content})      
+            st.session_state.messages.append({"role":"assistant", "content":response})   
+            # st.session_state.messages.append({"role":"assistant", "content":response['messages'][-1].content})      
                 
 
     
