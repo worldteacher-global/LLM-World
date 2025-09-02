@@ -165,7 +165,8 @@ class MyTools:
         if request.path:
             try:
                 df = pd.read_csv(request.path)
-                label = df.iloc[:, 0].tolist()
+                # label = df.iloc[:, 0].tolist()
+                label = df.loc[:, 'target'].tolist()
             except Exception as e:
                 label = None
                 print(f"Warning: Could not read labels from {request.path} - {e}")
