@@ -72,7 +72,7 @@ def oneshotagent(input_prompt: str):
 
 if __name__=='__main__':
 
-    st.title('I am a Statistics Assistant') 
+    st.title(':chart_with_upwards_trend: Statistics Assistant :paperclip:') 
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
