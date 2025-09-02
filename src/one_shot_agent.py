@@ -117,12 +117,12 @@ if __name__=='__main__':
             file_path = None
         ###
 
-        st.chat_message("user").markdown(prompt)    
-        st.session_state.messages.append({"role": "user","content":prompt})
+        st.chat_message("user").markdown(user_text)    
+        st.session_state.messages.append({"role": "user","content":user_text})
         
         with st.chat_message("assistant"):
             
-            response = oneshotagent(prompt)            
+            response = oneshotagent(user_text)            
             
             image_path = None
             if response:                    
