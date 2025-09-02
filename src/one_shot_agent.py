@@ -130,13 +130,12 @@ if __name__=='__main__':
                     if isinstance(obj, ToolMessage):     
                         if obj.name=='gen_plot':
                             image_path=obj.content
-                        else:
-                            final_response['messages'][-1].content
+                        
             if image_path:
                 # st.image(image_path, caption="Created Plot")
                 st.write(image_path)
-            # else:
-            #     st.write(final_response['messages'][-1].content)            
+            else:
+                st.write(final_response['messages'][-1].content)            
      
             st.session_state.messages.append({"role":"assistant", "content":response})       
 
