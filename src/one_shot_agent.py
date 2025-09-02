@@ -114,7 +114,7 @@ if __name__=='__main__':
         
         with st.chat_message("assistant"):
             
-            response = oneshotagent(user_text, file_path=file_path)            
+            response = oneshotagent(user_text, file_upload_path=file_path)            
             
             image_path = None
             if response:                  
