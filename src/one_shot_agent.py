@@ -123,14 +123,15 @@ if __name__=='__main__':
         with st.chat_message("assistant"):
             
             response = oneshotagent(prompt)            
-
-            if response:    
-                image_path = None
+            
+            image_path = None
+            if response:                    
                 for obj in response['messages']:
                     if isinstance(obj, ToolMessage):     
                         if obj.name=='gen_plot':
                             image_path=obj.content
-            
+                        else:
+                            pass
             if image_path:
                 st.image(image_path, caption="Created Plot")
             else:
