@@ -136,10 +136,10 @@ if __name__=='__main__':
             if image_path:
                 # st.image(image_path, caption="Created Plot")
                 st.write(image_path)
-            # else:
+            else:
                 # st.write(response['messages'][-1].content)            
      
             # st.session_state.messages.append({"role":"assistant", "content":response})       
-            st.session_state.messages.append({"role":"assistant", "content":response['messages'][-1].content})       
+                st.session_state.messages.append({"role":"assistant", "content":response['messages'][-1].content})       
 
     
