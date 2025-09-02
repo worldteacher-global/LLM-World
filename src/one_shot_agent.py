@@ -1,17 +1,19 @@
 import os
 import sys
-sys.append('/home/sagemaker-user/user-default-efs/CLONED_REPOS/LLM-World/src')
+sys.path.append('/home/sagemaker-user/user-default-efs/CLONED_REPOS/LLM-World/src')
 from mytools import MyTools
 from utils import Utils
 from langchain_core.prompts import ChatPromptTemplate
-from langgraph.prebuilt import creat_react_agent
+from langgraph.prebuilt import create_react_agent
 from langchain_mcp_adapters.client import MultiServerMCPClient
 
 from dotenv import load_dotenv
 load_dotenv('/home/sagemaker-user/user-default-efs/CLONED_REPOS/LLM-World/.env')
 import streamlit as st
 
-def oneshotagent(str: query):
+def oneshotagent(input_prompt: str):
+    prompt = input_prompt
+    
     mcp_client = (
         {
             "mcp_tools":{
@@ -48,7 +50,7 @@ def oneshotagent(str: query):
 
     tools = [tools.correlation_tool, tools.covariance_tool, tools.anova_one_way, tools.levene_test, tools.normality_tool, tools.calculate_PC, tools.gen_plot, tools.display_base64_image]
 
-    agent = creat_react_agent(
+    agent = create_react_agent(
         model=helper.openai_llm("gpt-4.1"),
         tools=tools,
         prompt=system_prompt,
@@ -57,11 +59,33 @@ def oneshotagent(str: query):
 
     agent_response = agent.invoke(
         {"messages": [
-            {"role":"user", "content":[{"type":"text", "text":query}]}
+            {"role":"user", "content":[{"type":"text", "text":prompt}]}
             ]
         }
     )
+
+    print(agent_response)
     
     return agent_response
-if __name__=='__mian__':
-    st.
+
+if __name__=='__main__':
+    # st.
+    query = 'Generate a line plot with the title "Sales Over Time. The x-axis should be [1, 2, 3, 4, 5] representing months, and the y-axis should be [10, 20, 15, 30, 25] representing sales in thousands.'
+    
+    result = oneshotagent(query)
+
+    print(result)
+    # final_response = oneshotagent(query)
+
+
+    # from langchain_core.messages import ToolMessage 
+
+    # image_path = None
+
+    # for obj in final_response['messages']:
+    #     # print(obj.text)
+    #     if isinstance(obj, ToolMessage):
+    #         # print(obj.content)        
+    #         if obj.name=='gen_plot':
+    #             print(obj.content)
+    #             image_path=obj.content
