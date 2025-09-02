@@ -13,6 +13,8 @@ from dotenv import load_dotenv
 load_dotenv('/home/ec2-user/BoW/LLM-World/.env')   ## EC2
 import streamlit as st
 
+from langchain_core.messages import ToolMessage 
+
 def oneshotagent(input_prompt: str):
     prompt = input_prompt
     
@@ -69,21 +71,6 @@ def oneshotagent(input_prompt: str):
     return agent_response
 
 if __name__=='__main__':
-   
-    # query = 'Generate a line plot with the title "Sales Over Time. The x-axis should be [1, 2, 3, 4, 5] representing months, and the y-axis should be [10, 20, 15, 30, 25] representing sales in thousands.'
-    
-    # result = oneshotagent(query)
-
-    from langchain_core.messages import ToolMessage 
-
-    # image_path = None
-
-    # for obj in result['messages']:
-    #     if isinstance(obj, ToolMessage):     
-    #         if obj.name=='gen_plot':
-    #             image_path=obj.content
-
-    # print(image_path)
 
     st.title('I am a Statistics Assistant') 
 
@@ -137,10 +124,7 @@ if __name__=='__main__':
 
             if image_path:
                 st.image(image_path, caption="Created Plot")
-                # st.markdown(image_path)
-           
-     
-            # st.session_state.messages.append({"role":"assistant", "content":response})   
+ 
             st.session_state.messages.append({"role":"assistant", "content":response['messages'][-1].content})      
                 
 
