@@ -89,8 +89,7 @@ if __name__=='__main__':
     os.makedirs(UPLOAD_DIR, exist_ok=True)
     
     prompt = st.chat_input("Hello! Please submit a statistics related question or request:", accept_file=True, file_type=[".csv"])        
-    if prompt:
-        
+    if prompt:        
         ### File upload
         user_text = prompt.text if hasattr(prompt, "text") else str(prompt)
       
@@ -115,7 +114,7 @@ if __name__=='__main__':
         
         with st.chat_message("assistant"):
             
-            response = oneshotagent(user_text)            
+            response = oneshotagent(user_text, file_path=file_path)            
             
             image_path = None
             if response:                  
