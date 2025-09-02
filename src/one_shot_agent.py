@@ -137,7 +137,7 @@ if __name__=='__main__':
                 # st.image(image_path, caption="Created Plot")
                 st.write(image_path)
             else:
-                st.write(final_response['messages'][-1].content)            
+                st.write(response['messages'][-1].content)            
      
             st.session_state.messages.append({"role":"assistant", "content":response})       
 
