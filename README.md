@@ -12,7 +12,8 @@
 
 
 # Dockerfile
-* sudo chmod 666 /var/run/docker.sock (enable docker w/o sudo for all users)
+* sudo chmod 666 /var/run/docker.sock (enable docker w/o sudo for all users "security risk")
+* sudo usermod -aG docker $USER (enable docker w/ docker group "no security risk")
 ## Build Image
 * docker build -t llm-image . (build image)
 ## Build Container
