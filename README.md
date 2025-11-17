@@ -12,6 +12,7 @@
 
 
 # Dockerfile
+* sudo chmod 666 /var/run/docker.sock (enable docker w/o sudo for all users)
 ## Build Image
 * docker build -t llm-image . (build image)
 ## Build Container
