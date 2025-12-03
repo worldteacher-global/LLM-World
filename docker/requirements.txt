@@ -1,5 +1,4 @@
 ipykernel
-# uv
 ipython
 lightning==2.2.0
 wandb
