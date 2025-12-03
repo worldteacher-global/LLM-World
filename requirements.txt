@@ -14,7 +14,7 @@ openai
 #-------------------AI Agent-------
 langgraph
 langchain
-langchain-aws
+# langchain-aws
 langchain-core
 langchain-openai
 langchain-tavily
