@@ -34,4 +34,9 @@
   -v /home/marfok/CLONED_REPOS/LLM-World/Notebooks/:/home/notebooks \
   -v /home/marfok/CLONED_REPOS/LLM-World/Files/:/home/files \
   llm-image:latest \
-  python src/oss-train.py    
+  python src/oss-train.py
+
+
+# Install kernel in vscode
+* python -m ipykernel install --user --name vllm --display-name "vLLM (Python 3.12)"
+
