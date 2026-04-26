@@ -1,7 +1,7 @@
 FROM nvidia/cuda:12.6.0-devel-ubuntu22.04
 
 RUN apt-get update && \
-    apt-get install -y git build-essential python3.12 python3.12-venv python3-pip \
+    apt-get install -y git build-essential python3 python3-venv python3-pip curl \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -9,6 +9,7 @@ WORKDIR /app
 COPY requirements.txt .
 COPY . .
 
+RUN pip install uv
 RUN pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
 RUN pip install vllm
 RUN pip install jupyter
