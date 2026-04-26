@@ -1,8 +1,8 @@
-FROM python:3.12
+FROM nvidia/cuda:12.6.0-devel-ubuntu22.04
 
 RUN apt-get update && \
-apt-get install -y git \
-&& rm -rf /var/lib/apt/lists/*
+    apt-get install -y git build-essential python3.12 python3.12-venv python3-pip \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -10,15 +10,11 @@ COPY requirements.txt .
 COPY . .
 
 RUN pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+RUN pip install vllm
 RUN pip install jupyter
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-# if runninng jupyter notebook
 EXPOSE 8888
-# Gradio
 EXPOSE 7860
-# Run an interactive shell by default
-# CMD ["/bin/bash"] 
 
-## Run a Jupyter Notebook server
 CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
