@@ -1,0 +1,27 @@
+Kimi K2 on HPC - Local Cluster Notes
+=====================================
+
+Benefits of Running Locally
+----------------------------
+- Weights are local: model files sit in HuggingFace cache on the cluster filesystem. Nothing leaves the network.
+- Data stays in-house: every prompt and response stays on the cluster. No data sent to external API providers.
+- No API costs: once the hardware exists, inference is free (just electricity and compute time).
+- No rate limits: you control throughput.
+- Compliance/regulatory: keeping everything on-prem satisfies data residency and privacy requirements (healthcare, finance, government).
+- Customization: can fine-tune the model on proprietary data without sharing it.
+
+Tradeoffs vs Cloud APIs (Claude, GPT-4, etc.)
+-----------------------------------------------
+- Harder to set up and maintain.
+- Hardware is expensive (8x H100 ~$250k+, 16 GPUs needed for Kimi K2).
+- You maintain everything: updates, drivers, cluster issues.
+- Cloud API models may outperform open-source models on some tasks.
+
+Tradeoffs vs Hosted Inference (Together, Fireworks, Replicate)
+---------------------------------------------------------------
+- Those services run the same open-source models on their GPUs.
+- Cheaper than buying hardware, but your data still leaves your network.
+
+Core Value Proposition
+-----------------------
+Data sovereignty + no per-token cost. If the organization has strict data handling requirements, running locally is often the only option.
