@@ -15,3 +15,6 @@ Notebooks/stat-oss copy.ipynb
 Notebooks/.ipynb_checkpoints
 Files/.ipynb_checkpoints/
 Notebooks/wandb/
+*.sqsh
+Running
+b77b741d6c6c
